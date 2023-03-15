@@ -13,22 +13,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import it.polito.did.gameskeleton.ui.theme.GameSkeletonTheme
 
 @Composable
-fun ManagingScreen() {
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = "MANAGING",
-            fontSize = MaterialTheme.typography.h3.fontSize,
-            fontWeight = FontWeight.Bold,
-            color = Color.Black
-        )
+fun ManagingScreen(team : String) {
+    GameSkeletonTheme(team = team) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "MANAGING",
+                fontSize = MaterialTheme.typography.h3.fontSize,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
+            )
+        }
     }
 /*
     Column(
@@ -42,5 +44,5 @@ fun ManagingScreen() {
 @Composable
 @Preview
 fun ManagingScreenPreview() {
-    ManagingScreen()
+    ManagingScreen("")
 }

@@ -10,19 +10,19 @@ import it.polito.did.gameskeleton.screens.NaplesScreen
 import it.polito.did.gameskeleton.screens.TimelineScreen
 
 @Composable
-fun BottomNavGraph(navController: NavHostController){
+fun BottomNavGraph(team: String, navController: NavHostController){
     NavHost(
         navController = navController,
         startDestination = BottomBarScreen.Home.route
     ){
         composable(route = BottomBarScreen.Home.route){
-            HomeScreen()
+            HomeScreen(team)
         }
         composable(route = BottomBarScreen.Managing.route){
-            ManagingScreen()
+            ManagingScreen(team)
         }
         composable(route = BottomBarScreen.Timeline.route){
-            TimelineScreen()
+            TimelineScreen(team)
         }/*
         composable(route = BottomBarScreen.Naples.route){
             NaplesScreen()

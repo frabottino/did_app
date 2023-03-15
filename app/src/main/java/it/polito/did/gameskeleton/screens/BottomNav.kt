@@ -46,6 +46,7 @@ fun BottomNav(team: String, modifier: Modifier = Modifier) {
     ) {
         Modifier.padding(it)
         BottomNavGraph(
+            team,
             navController = navController
         )
     }
@@ -62,24 +63,21 @@ fun BottomBar(team : String, navController: NavHostController) {
     val navStackBackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navStackBackEntry?.destination
 
-    GameSkeletonTheme(team = team) {
-
-        Row(
-            modifier = Modifier
-                .padding(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp)
-                .background(Color.Transparent)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            screens.forEach { screen ->
-                AddItem(
-                    ChangeInColor(team),
-                    screen = screen,
-                    currentDestination = currentDestination,
-                    navController = navController
-                )
-            }
+    Row(
+        modifier = Modifier
+            .padding(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp)
+            .background(Color.Transparent)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        screens.forEach { screen ->
+            AddItem(
+                ChangeInColor(team),
+                screen = screen,
+                currentDestination = currentDestination,
+                navController = navController
+            )
         }
     }
 }
@@ -133,12 +131,12 @@ fun RowScope.AddItem(
 }
 
 fun ChangeInColor(color: String) : Color{
-    when(color) {
-        "Red" -> return Color.Red
-        "Blue" -> return Color.Blue
-        "Green" -> return Color.Green
-        "Yellow" -> return Color.Yellow
-        else -> return Color.Gray
+    return when(color) {
+        "Red" -> Color.Red
+        "Blue" -> Color.Blue
+        "Green" -> Color.Green
+        "Yellow" -> Color.Yellow
+        else -> Color.Gray
     }
 }
 

@@ -10,7 +10,6 @@ sealed class BottomBarScreen(
     val route: String,
     val title: String,
     val icon: Int,
-    //val icon_focus: Int
 ) {
     object Home: BottomBarScreen(
         route = "home",

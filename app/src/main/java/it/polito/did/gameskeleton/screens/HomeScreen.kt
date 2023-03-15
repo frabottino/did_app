@@ -14,19 +14,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import it.polito.did.gameskeleton.ui.theme.GameSkeletonTheme
 
 @Composable
-fun HomeScreen() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = "HOME",
-            fontSize = MaterialTheme.typography.h3.fontSize,
-            fontWeight = FontWeight.Bold,
-            color = Color.Black
-        )
+fun HomeScreen(team : String) {
+    GameSkeletonTheme(team = team) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "HOME",
+                fontSize = MaterialTheme.typography.h3.fontSize,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
+            )
+        }
     }
 }
 
@@ -34,5 +36,5 @@ fun HomeScreen() {
 @Composable
 @Preview
 fun HomeScreenPreview() {
-    HomeScreen()
+    HomeScreen("")
 }
