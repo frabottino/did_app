@@ -31,7 +31,7 @@ fun SplashScreen(modifier: Modifier = Modifier) {
 @Preview(showBackground = true, widthDp = 600, heightDp = 1280)
 @Composable
 fun PreviewSpashScreen() {
-    GameSkeletonTheme {
+    GameSkeletonTheme ("Red"){
         SplashScreen()
     }
 }

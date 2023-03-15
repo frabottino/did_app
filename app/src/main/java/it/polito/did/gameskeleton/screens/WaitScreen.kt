@@ -26,7 +26,7 @@ fun WaitScreen(modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewWaitScreen() {
-    GameSkeletonTheme {
+    GameSkeletonTheme ("Red"){
         WaitScreen()
     }
 

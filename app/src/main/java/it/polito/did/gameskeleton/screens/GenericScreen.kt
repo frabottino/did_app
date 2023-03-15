@@ -11,6 +11,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import it.polito.did.gameskeleton.ui.theme.GameSkeletonTheme
@@ -33,7 +34,7 @@ fun GenericScreen(
                     .fillMaxWidth()
                     .background(MaterialTheme.colors.secondary),
                 style = MaterialTheme.typography.h3,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
             content()
         }
@@ -43,7 +44,7 @@ fun GenericScreen(
 @Preview(showBackground = true)
 @Composable
 fun PreviewGenericScreen() {
-    GameSkeletonTheme {
+    GameSkeletonTheme ("Red"){
         GenericScreen(title = "Generic Screen")
     }
 

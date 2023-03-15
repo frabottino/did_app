@@ -10,14 +10,15 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
     //GenericScreen(title = "Dashboard", modifier) {
 
     //}
-    it.polito.did.gameskeleton.MainScreen()
+    //it.polito.did.gameskeleton.MainBottomScreen()
+    //MainContent(onStartMemory = { /*TODO*/ })
     // TODO: ricordarsi di mettere questo in interfaccia studente e non docente
 }
 
 @Preview(showBackground = true)
 @Composable
 fun PreviewDashboardScreen() {
-    GameSkeletonTheme {
-        it.polito.did.gameskeleton.MainScreen()
+    GameSkeletonTheme ("Red") {
+        //it.polito.did.gameskeleton.MainBottomScreen()
     }
 }

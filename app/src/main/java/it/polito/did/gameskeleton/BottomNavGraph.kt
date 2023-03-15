@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import it.polito.did.gameskeleton.screens.HomeScreen
 import it.polito.did.gameskeleton.screens.ManagingScreen
+import it.polito.did.gameskeleton.screens.NaplesScreen
 import it.polito.did.gameskeleton.screens.TimelineScreen
 
 @Composable
@@ -22,6 +23,9 @@ fun BottomNavGraph(navController: NavHostController){
         }
         composable(route = BottomBarScreen.Timeline.route){
             TimelineScreen()
-        }
+        }/*
+        composable(route = BottomBarScreen.Naples.route){
+            NaplesScreen()
+        }*/
     }
 }

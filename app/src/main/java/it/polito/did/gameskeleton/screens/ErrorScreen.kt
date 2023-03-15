@@ -34,7 +34,7 @@ fun ErrorScreen(message: String, modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewErrorScreen() {
-    GameSkeletonTheme {
+    GameSkeletonTheme ("Red"){
         ErrorScreen("Unknown MatchID")
     }
 }

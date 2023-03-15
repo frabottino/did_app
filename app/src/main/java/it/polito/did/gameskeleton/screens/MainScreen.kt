@@ -5,7 +5,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import it.polito.did.gameskeleton.BottomNav
 import it.polito.did.gameskeleton.GameViewModel
+//import it.polito.did.gameskeleton.MainBottomScreen
 import it.polito.did.gameskeleton.ScreenName
 
 @Composable
@@ -23,9 +25,14 @@ fun MainScreen(modifier: Modifier = Modifier) {
             players,
             vm::onStartGame,
             modifier)
+        is ScreenName.Memory -> MainContent(
+            vm::onStartMemory,
+            vm,
+            modifier)
+        is ScreenName.Home -> BottomNav(screenName.team, modifier)
         is ScreenName.WaitingStart -> WaitScreen(modifier)
         is ScreenName.Dashboard -> DashboardScreen(modifier)
-        is ScreenName.Playing -> PlayerScreen(screenName.team, modifier)
+        is ScreenName.Playing -> PlayerScreen(screenName.team,  modifier)
         is ScreenName.Error -> ErrorScreen(screenName.message, modifier)
         null -> Box(modifier)
     }

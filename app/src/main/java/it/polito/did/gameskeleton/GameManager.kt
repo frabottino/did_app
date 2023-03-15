@@ -1,6 +1,7 @@
 package it.polito.did.gameskeleton
 
 import android.util.Log
+import androidx.compose.material.MaterialTheme
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.ktx.auth
@@ -15,10 +16,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.time.LocalDateTime
 
+import java.util.Random
+
 class GameManager(private val scope:CoroutineScope) {
     private val URL = "https://didb-2a4ab-default-rtdb.firebaseio.com/"
     private val firebase = Firebase.database(URL)
     private val firebaseAuth = Firebase.auth
+    private var playerName = String()
 
     init {
         //firebase.setLogLevel(Logger.Level.DEBUG)
@@ -47,10 +51,13 @@ class GameManager(private val scope:CoroutineScope) {
     }
     val players: LiveData<Map<String, String>> = mutablePlayers
 
+    private val emojis: MutableLiveData<MutableList<EmojiModel>> by lazy {
+        MutableLiveData<MutableList<EmojiModel>>()
+    }
 
     private fun assignTeam(players: Map<String,String>): Map<String,String>? {
         val teams = players.keys.groupBy { players[it].toString() }
-        val teamNames = listOf("team1", "team2", "team3", "team4")
+        val teamNames = listOf("Red", "Blue", "Green", "Yellow")//("team1", "team2", "team3", "team4")
         val sizes = teamNames.map{ teams[it]?.size ?: 0 }
         val min: Int = sizes.stream().min(Integer::compare).get()
         var index = sizes.indexOf(min)
@@ -90,13 +97,24 @@ class GameManager(private val scope:CoroutineScope) {
     private fun getMyTeam(): String {
         Log.d("GameManager", "players: ${players.value}")
         Log.d("GameManager", "uid: ${firebaseAuth.uid}")
-        return players.value?.get(firebaseAuth.uid) ?: ""
+        println("ciao ${players.value?.toString()}")
+        println("${firebaseAuth.uid}")
+        println(playerName)
+        return players.value?.get(playerName) ?: ""
+        //return players.value?.get(firebaseAuth.uid) ?: ""
+    }
+
+    private fun getMyName(): String {
+        Log.d("GameManager", "players: ${players.value}")
+        Log.d("GameManager", "uid: ${firebaseAuth.uid}")
+        return players.value?.get(firebaseAuth.toString()) ?: ""
     }
 
     fun createNewGame() {
         scope.launch {
             try {
-                val ref = firebase.getReference("abc")
+                val random = Random().nextInt( 89999) + 10000
+                val ref = firebase.getReference(random.toString())
                 //val ref = firebase.reference.push()
                 Log.d("GameManager","Creating match ${ref.key}")
                 ref.setValue(
@@ -136,13 +154,14 @@ class GameManager(private val scope:CoroutineScope) {
     private fun getScreenName(name:String): ScreenName {
         return when (name) {
             "WaitingStart" -> ScreenName.WaitingStart
-            "Playing" -> ScreenName.Playing(getMyTeam())
+            "Playing" -> ScreenName.Home(getMyTeam())//Playing(getMyTeam()) //qui è dove si indica il primo screen del player
             else -> ScreenName.Error("Unknown screen $name")
         }
     }
 
-    fun joinGame(matchId:String) {
+    fun joinGame(matchId:String, nameId:String) {
         if (matchId.isEmpty()) return
+        playerName = nameId
         scope.launch {
             try {
                 val ref = firebase.getReference(matchId)
@@ -151,7 +170,7 @@ class GameManager(private val scope:CoroutineScope) {
                     mutableMatchId.value = matchId
                     ref
                         .child("players")
-                        .child(firebaseAuth.uid!!)
+                        .child(playerName)//firebaseAuth.uid!!)
                         .setValue("").await()
                     watchPlayers()
                     watchScreen()
@@ -165,16 +184,94 @@ class GameManager(private val scope:CoroutineScope) {
     }
 
     fun startGame() {
-        scope.launch {
+        scope.launch{
             try {
                 val ref = firebase.getReference(matchId.value ?: throw RuntimeException("Invalid State"))
                 ref.child("screen").setValue("Playing").await()
-                mutableScreenName.value = ScreenName.Dashboard
+                mutableScreenName.value = ScreenName.Home(getMyTeam())
                 Log.d("GameManager", "Game started")
             } catch (e: Exception) {
                 mutableScreenName.value = ScreenName.Error(e.message ?: "Generic error")
             }
         }
+    }
+
+
+    fun startMemory() {
+        emojis.value = mutableListOf(
+            EmojiModel("😍"),
+            EmojiModel(" 🥰"),
+            EmojiModel("😘"),
+            EmojiModel("😭"),
+            EmojiModel("😢"),
+            EmojiModel("😂"),
+            EmojiModel("😍"),
+            EmojiModel(" 🥰"),
+            EmojiModel("😘"),
+            EmojiModel("😭"),
+            EmojiModel("😢"),
+            EmojiModel("😂"),
+        ).apply { shuffle() }
+    }
+
+    fun getEmojis(): LiveData<MutableList<EmojiModel>> {
+        return emojis
+    }
+
+    fun loadEmojis() {
+        emojis.value = mutableListOf(
+            EmojiModel("😍"),
+            EmojiModel(" 🥰"),
+            EmojiModel("😘"),
+            EmojiModel("😭"),
+            EmojiModel("😢"),
+            EmojiModel("😂"),
+            EmojiModel("😍"),
+            EmojiModel(" 🥰"),
+            EmojiModel("😘"),
+            EmojiModel("😭"),
+            EmojiModel("😢"),
+            EmojiModel("😂"),
+        ).apply { shuffle() }
+    }
+
+    fun updateShowVisibleCard(id: String) {
+        val selects: List<EmojiModel>? = emojis.value?.filter { it -> it.isSelect }
+        val selectCount: Int = selects?.size ?: 0
+        var charFind: String = "";
+        if (selectCount >= 2) {
+            val hasSameChar: Boolean = selects!!.get(0).char == selects.get(1).char
+            if (hasSameChar) {
+                charFind = selects.get(0).char
+            }
+        }
+
+        val list: MutableList<EmojiModel>? = emojis.value?.map { it ->
+            if (selectCount >= 2) {
+                it.isSelect = false
+            }
+
+            if (it.char == charFind) {
+                it.isVisible = false
+            }
+
+            if (it.id == id) {
+                it.isSelect = true
+            }
+
+            it
+        } as MutableList<EmojiModel>?
+
+        val visibleCount: Int = list?.filter { it -> it.isVisible }?.size ?: 0
+        if (visibleCount <= 0) {
+            //loadEmojis()
+            mutableScreenName.value = ScreenName.Dashboard
+            println("ayo")
+            return
+        }
+
+        emojis.value?.removeAll { true }
+        emojis.value = list
     }
 
 

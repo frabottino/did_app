@@ -7,7 +7,9 @@ sealed class ScreenName {
     object WaitingStart: ScreenName()
     class Playing(val team: String): ScreenName()
     object Dashboard: ScreenName()
+    object Memory: ScreenName()
     class Error(val message:String): ScreenName()
+    class Home(val team: String) : ScreenName()
 }
 
 

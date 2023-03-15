@@ -6,31 +6,26 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.graphics.Color
 import it.polito.did.gameskeleton.screens.MainScreen
-import it.polito.did.gameskeleton.ui.theme.BottomNavBarTheme
 import it.polito.did.gameskeleton.ui.theme.GameSkeletonTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        println("ciao")
+        //println("ciao")
         setContent {
-            GameSkeletonTheme {
+           GameSkeletonTheme ("default"){
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
+                    color = MaterialTheme.colors.secondary
                 ) {
                     MainScreen()
+                    //BottomNav()
                 }
-            }
-            //BottomNavBarTheme{
-
-            //}
+           }
         }
     }
 }

@@ -139,7 +139,7 @@ fun DefaultPreview1() {
     val players: State<Map<String,String>> = remember {
         mutableStateOf(mapOf("Mario" to "team1", "Paola" to "team2"))
     }
-    GameSkeletonTheme {
+    GameSkeletonTheme ("Red"){
         SetupMatchScreen("abc", players, {})
     }
 }
