@@ -6,6 +6,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import it.polito.did.gameskeleton.BottomNav
+import it.polito.did.gameskeleton.Card
 import it.polito.did.gameskeleton.GameViewModel
 //import it.polito.did.gameskeleton.MainBottomScreen
 import it.polito.did.gameskeleton.ScreenName
@@ -30,6 +31,13 @@ fun MainScreen(modifier: Modifier = Modifier) {
             vm,
             modifier)
         is ScreenName.Home -> BottomNav(screenName.team, modifier)
+        is ScreenName.Mascotte -> MascotteScreen(
+            screenName.team,
+            vm::onStartMemory,
+            modifier)
+        is ScreenName.Cards -> CardsScreen(
+            screenName.team,
+            vm::onGoHome)
         is ScreenName.WaitingStart -> WaitScreen(modifier)
         is ScreenName.Dashboard -> DashboardScreen(modifier)
         is ScreenName.Playing -> PlayerScreen(screenName.team,  modifier)

@@ -76,7 +76,8 @@ class EmojiViewModel : ViewModel() {
         val visibleCount: Int = list?.filter { it -> it.isVisible }?.size ?: 0
         if (visibleCount <= 0) {
             //loadEmojis()
-            msn.value = ScreenName.Home("14")
+            //msn.value = ScreenName.Home("14")
+            msn.value = ScreenName.Cards("14")
             println("ao")
             return
         }

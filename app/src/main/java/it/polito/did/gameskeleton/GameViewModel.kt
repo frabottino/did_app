@@ -10,6 +10,7 @@ class GameViewModel: ViewModel() {
     fun onJoinGame(matchId:String, nameId:String) = gameManager.joinGame(matchId, nameId)
     fun onStartGame() = gameManager.startGame()
     fun onStartMemory() = gameManager.startMemory()
+    fun onGoHome() = gameManager.goToHome()
 
     val players = gameManager.players
     val screenName = gameManager.screenName

@@ -10,6 +10,12 @@ sealed class ScreenName {
     object Memory: ScreenName()
     class Error(val message:String): ScreenName()
     class Home(val team: String) : ScreenName()
+    class Mascotte(val team: String) : ScreenName()
+    class Cards(val team: String) : ScreenName()
+}
+
+fun setScreenName(){
+
 }
 
 

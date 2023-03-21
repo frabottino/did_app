@@ -10,6 +10,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import it.polito.did.gameskeleton.screens.MainContent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -154,7 +155,8 @@ class GameManager(private val scope:CoroutineScope) {
     private fun getScreenName(name:String): ScreenName {
         return when (name) {
             "WaitingStart" -> ScreenName.WaitingStart
-            "Playing" -> ScreenName.Home(getMyTeam())//Playing(getMyTeam()) //qui è dove si indica il primo screen del player
+            //"Playing" -> ScreenName.Home(getMyTeam())//Playing(getMyTeam()) //qui è dove si indica il primo screen del player
+            "Playing" -> ScreenName.Mascotte(getMyTeam())//Playing(getMyTeam()) //qui è dove si indica il primo screen del player
             else -> ScreenName.Error("Unknown screen $name")
         }
     }
@@ -188,12 +190,18 @@ class GameManager(private val scope:CoroutineScope) {
             try {
                 val ref = firebase.getReference(matchId.value ?: throw RuntimeException("Invalid State"))
                 ref.child("screen").setValue("Playing").await()
-                mutableScreenName.value = ScreenName.Home(getMyTeam())
+                //mutableScreenName.value = ScreenName.Home(getMyTeam())
+                mutableScreenName.value = ScreenName.Mascotte(getMyTeam())
                 Log.d("GameManager", "Game started")
             } catch (e: Exception) {
                 mutableScreenName.value = ScreenName.Error(e.message ?: "Generic error")
             }
         }
+    }
+
+    fun goToHome(){
+        mutableScreenName.value = ScreenName.Home(getMyTeam())
+        //TODO try catch da mettere a posto
     }
 
 
@@ -212,6 +220,9 @@ class GameManager(private val scope:CoroutineScope) {
             EmojiModel("😢"),
             EmojiModel("😂"),
         ).apply { shuffle() }
+        mutableScreenName.value = ScreenName.Memory
+
+        //TODO try catch da mettere a posto
     }
 
     fun getEmojis(): LiveData<MutableList<EmojiModel>> {
