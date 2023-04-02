@@ -31,7 +31,7 @@ class GameManager(private val scope:CoroutineScope) {
             try {
                 firebaseAuth.signInAnonymously().await()
                 Log.d("GameManager", "Current User: ${firebaseAuth.uid}")
-                delay(500)
+                delay(2000)
                 mutableScreenName.value = ScreenName.Initial
             } catch (e: Exception) {
                 mutableScreenName.value = ScreenName.Error(e.message?:"Unknown error")
