@@ -8,8 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 private val LightColorPalette = lightColors(
-    primary = Teal200,
-    primaryVariant = Teal200,
+    primary = Blue800,
+    primaryVariant = Blue800,
     secondary = Teal200
 )
 
@@ -77,7 +77,7 @@ private val DarkColorPaletteRed = darkColors(
 )
 
 @Composable
-fun GameSkeletonTheme(team: String, darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
+fun GameSkeletonTheme(team: String? = null, darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val colors = if (darkTheme) {
         if(team == "Red") DarkColorPaletteRed
         else if(team == "Blue") DarkColorPaletteBlue
