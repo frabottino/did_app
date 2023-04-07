@@ -78,7 +78,6 @@ class EmojiViewModel : ViewModel() {
             //loadEmojis()
             //msn.value = ScreenName.Home("14")
             msn.value = ScreenName.Cards("14")
-            println("ao")
             return
         }
 

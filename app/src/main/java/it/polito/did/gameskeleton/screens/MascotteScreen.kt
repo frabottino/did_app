@@ -14,10 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import it.polito.did.gameskeleton.flappyminigame.FlappyBird
 import it.polito.did.gameskeleton.ui.theme.GameSkeletonTheme
 
 @Composable
-fun MascotteScreen(team: String, onStartMemory: () -> Unit, modifier: Modifier = Modifier) {
+fun MascotteScreen(team: String, onStartMemory: () -> Unit, onStartFlappy: () -> Unit, modifier: Modifier = Modifier) {
     GameSkeletonTheme(team = team) {
         Box(
             modifier
@@ -33,6 +34,11 @@ fun MascotteScreen(team: String, onStartMemory: () -> Unit, modifier: Modifier =
                 modifier = modifier.align(Alignment.Center),
                 onClick = {onStartMemory()}) {
                 Text("GO TO MEMORY")
+            }
+            Button(
+                modifier = modifier.align(Alignment.Center),
+                onClick = {onStartFlappy()}) {
+                Text("GO TO FLAPPY")
             }
         }
     }

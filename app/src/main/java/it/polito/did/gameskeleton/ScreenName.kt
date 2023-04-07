@@ -12,11 +12,8 @@ sealed class ScreenName {
     class Home(val team: String) : ScreenName()
     class Mascotte(val team: String) : ScreenName()
     class Cards(val team: String) : ScreenName()
-}
-
-fun setScreenName(){
-
-}
+    object Flappy : ScreenName()
+    }
 
 
 

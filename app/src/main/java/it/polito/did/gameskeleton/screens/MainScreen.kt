@@ -10,6 +10,7 @@ import it.polito.did.gameskeleton.Card
 import it.polito.did.gameskeleton.GameViewModel
 //import it.polito.did.gameskeleton.MainBottomScreen
 import it.polito.did.gameskeleton.ScreenName
+import it.polito.did.gameskeleton.flappyminigame.FlappyBird
 
 @Composable
 fun MainScreen(modifier: Modifier = Modifier) {
@@ -34,10 +35,12 @@ fun MainScreen(modifier: Modifier = Modifier) {
         is ScreenName.Mascotte -> MascotteScreen(
             screenName.team,
             vm::onStartMemory,
+            vm :: onStartFlappy,
             modifier)
         is ScreenName.Cards -> CardsScreen(
             screenName.team,
             vm::onGoHome)
+        is ScreenName.Flappy -> FlappyBird()
         is ScreenName.WaitingStart -> WaitScreen(modifier)
         is ScreenName.Dashboard -> DashboardScreen(modifier)
         is ScreenName.Playing -> PlayerScreen(screenName.team,  modifier)

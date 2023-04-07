@@ -39,6 +39,6 @@ fun PlayerScreen(team: String, modifier: Modifier = Modifier) {
 @Composable
 fun PreviewPlayerScreen() {
     GameSkeletonTheme ("Red"){
-        PlayerScreen("Team A")
+        PlayerScreen("Teams A")
     }
 }

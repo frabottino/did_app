@@ -133,5 +133,5 @@ fun ChangeInColor(color: String) : Color{
 @Composable
 @Preview
 fun BottomNavPreview() {
-    BottomNav("Team")
+    BottomNav("Teams")
 }

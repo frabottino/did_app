@@ -1,7 +1,6 @@
 package it.polito.did.gameskeleton
 
 import android.util.Log
-import androidx.compose.material.MaterialTheme
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.ktx.auth
@@ -10,7 +9,8 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import it.polito.did.gameskeleton.screens.MainContent
+import it.polito.did.gameskeleton.flappyminigame.FlappyBird
+import it.polito.did.gameskeleton.flappyminigame.Game
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -49,6 +49,7 @@ class GameManager(private val scope:CoroutineScope) {
 
     private val mutablePlayers = MutableLiveData<Map<String, String>>().also {
         it.value = emptyMap()
+        val teams : Teams
     }
     val players: LiveData<Map<String, String>> = mutablePlayers
 
@@ -57,16 +58,21 @@ class GameManager(private val scope:CoroutineScope) {
     }
 
     private fun assignTeam(players: Map<String,String>): Map<String,String>? {
-        val teams = players.keys.groupBy { players[it].toString() }
-        val teamNames = listOf("Red", "Blue", "Green", "Yellow")//("team1", "team2", "team3", "team4")
-        val sizes = teamNames.map{ teams[it]?.size ?: 0 }
-        val min: Int = sizes.stream().min(Integer::compare).get()
-        var index = sizes.indexOf(min)
-        val updatedPlayers = players.toMutableMap()
+        val teams = players.keys.groupBy { players[it].toString() } //raggruppa i giocatori per squadra
+        val teamNames = listOf("Red", "Blue", "Green", "Yellow")
+        val sizes = teamNames.map{ teams[it]?.size ?: 0 } //guarda il numero di componenti per ogni squadra
+        println(sizes)
+        val pickAGuy = teamNames.map{ teams[it]?.get(1)} //piglia il quartetto di giocatori che sono nell'indice x della squadra
+        val min: Int = sizes.stream().min(Integer::compare).get() //guarda il valore più basso di componenti in una squadra
+        var index = sizes.indexOf(min) //indica l'indice della squadra con meno giocatori
+        val updatedPlayers = players.toMutableMap() //lista dei giocatori con squadra
         var changed = false
+        println("players " + updatedPlayers)
+        println("the guy is " + pickAGuy)
+        println(teamNames[1])
         teams[""]?.forEach {
-            updatedPlayers[it] = teamNames[index]
-            index = (index +1) % teamNames.size
+            updatedPlayers[it] = teamNames[index] //lista giocatori aggiornata
+            index = (index +1) % teamNames.size //aggiorna indice di squadra meno popolata
             changed = true
         }
         return if (changed) updatedPlayers else null
@@ -204,6 +210,18 @@ class GameManager(private val scope:CoroutineScope) {
         //TODO try catch da mettere a posto
     }
 
+    fun endTurn(teams : Teams){
+        //prendere riferimento di chi ha appena schiacciato il bottone di endturn
+        //disabilitare modifiche alla sua squadra
+        //cambiare il riferimento alla squadra in possesso del turno
+        //cambiare il riferimento al capitano della squadra
+        //avviare schermata mascotte passando il riferimento della squadra corrente
+    }
+
+    fun startFlappy() {
+        mutableScreenName.value = ScreenName.Flappy
+        //TODO try catch da mettere a posto
+    }
 
     fun startMemory() {
         emojis.value = mutableListOf(

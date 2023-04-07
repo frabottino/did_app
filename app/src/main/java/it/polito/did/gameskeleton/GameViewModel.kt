@@ -2,6 +2,7 @@ package it.polito.did.gameskeleton
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import it.polito.did.gameskeleton.flappyminigame.FlappyBird
 
 class GameViewModel: ViewModel() {
     private val gameManager = GameManager(viewModelScope)
@@ -10,6 +11,7 @@ class GameViewModel: ViewModel() {
     fun onJoinGame(matchId:String, nameId:String) = gameManager.joinGame(matchId, nameId)
     fun onStartGame() = gameManager.startGame()
     fun onStartMemory() = gameManager.startMemory()
+    fun onStartFlappy() = gameManager.startFlappy()
     fun onGoHome() = gameManager.goToHome()
 
     val players = gameManager.players

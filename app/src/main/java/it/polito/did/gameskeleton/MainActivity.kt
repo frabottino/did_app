@@ -8,6 +8,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import it.polito.did.gameskeleton.flappyminigame.FlappyBird
 import it.polito.did.gameskeleton.screens.MainScreen
 import it.polito.did.gameskeleton.ui.theme.GameSkeletonTheme
 
@@ -22,7 +23,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.secondary
                 ) {
-                    MainScreen()
+                    //FlappyBird()
+                    MainScreen() //quello giusto
                     //BottomNav()
                 }
            }
