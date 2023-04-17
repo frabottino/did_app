@@ -13,6 +13,7 @@ sealed class ScreenName {
     class Mascotte(val team: String) : ScreenName()
     class Cards(val team: String) : ScreenName()
     object Flappy : ScreenName()
+    object Quiz : ScreenName()
     }
 
 

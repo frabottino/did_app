@@ -7,5 +7,7 @@ class Player {
         }
     private val isMyPersonalTurn : Boolean = false
     private val isMyTeamTurn : Boolean = false
-    private val cards = List(18) {Card()}
+    private val nickname = String
+    private val team = String
+    //private val cards = List(18) { Card() }
 }

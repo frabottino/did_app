@@ -35,12 +35,14 @@ fun MainScreen(modifier: Modifier = Modifier) {
         is ScreenName.Mascotte -> MascotteScreen(
             screenName.team,
             vm::onStartMemory,
-            vm :: onStartFlappy,
+            vm::onStartFlappy,
+            vm::onStartQuiz,
             modifier)
         is ScreenName.Cards -> CardsScreen(
             screenName.team,
             vm::onGoHome)
         is ScreenName.Flappy -> FlappyBird()
+        is ScreenName.Quiz -> QuizScreen()
         is ScreenName.WaitingStart -> WaitScreen(modifier)
         is ScreenName.Dashboard -> DashboardScreen(modifier)
         is ScreenName.Playing -> PlayerScreen(screenName.team,  modifier)

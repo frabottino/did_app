@@ -12,6 +12,7 @@ class GameViewModel: ViewModel() {
     fun onStartGame() = gameManager.startGame()
     fun onStartMemory() = gameManager.startMemory()
     fun onStartFlappy() = gameManager.startFlappy()
+    fun onStartQuiz() = gameManager.startQuiz()
     fun onGoHome() = gameManager.goToHome()
 
     val players = gameManager.players

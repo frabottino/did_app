@@ -1,0 +1,728 @@
+[
+  {
+    "id": "1",
+    "power": "1",
+    "level": "1",
+    "team": null,
+    "type": "TRANSPORT"
+  },
+
+  {
+    "id": "2",
+    "power": "1",
+    "level": "1",
+    "team": null,
+    "type": "TRANSPORT"
+  },
+
+  {
+    "id": "3",
+    "power": "1",
+    "level": "1",
+    "team": null,
+    "type": "TRANSPORT"
+  },
+
+  {
+    "id": "4",
+    "power": "1",
+    "level": "1",
+    "team": null,
+    "type": "TRANSPORT"
+  },
+
+  {
+    "id": "5",
+    "power": "1",
+    "level": "1",
+    "team": null,
+    "type": "TRANSPORT"
+  },
+
+  {
+    "id": "6",
+    "power": "2",
+    "level": "1",
+    "team": null,
+    "type": "TRANSPORT"
+  },
+
+  {
+    "id": "7",
+    "power": "2",
+    "level": "1",
+    "team": null,
+    "type": "TRANSPORT"
+  },
+
+  {
+    "id": "8",
+    "power": "2",
+    "level": "1",
+    "team": null,
+    "type": "TRANSPORT"
+  },
+
+  {
+    "id": "9",
+    "power": "2",
+    "level": "1",
+    "team": null,
+    "type": "TRANSPORT"
+  },
+
+  {
+    "id": "10",
+    "power": "2",
+    "level": "1",
+    "team": null,
+    "type": "TRANSPORT"
+  },
+
+  {
+    "id": "11",
+    "power": "3",
+    "level": "1",
+    "team": null,
+    "type": "TRANSPORT"
+  },
+
+  {
+    "id": "12",
+    "power": "3",
+    "level": "1",
+    "team": null,
+    "type": "TRANSPORT"
+  },
+
+  {
+    "id": "13",
+    "power": "3",
+    "level": "1",
+    "team": null,
+    "type": "TRANSPORT"
+  },
+
+  {
+    "id": "14",
+    "power": "3",
+    "level": "1",
+    "team": null,
+    "type": "TRANSPORT"
+  },
+
+  {
+    "id": "15",
+    "power": "3",
+    "level": "1",
+    "team": null,
+    "type": "TRANSPORT"
+  },
+
+  {
+    "id": "16",
+    "power": "1",
+    "level": "1",
+    "team": null,
+    "type": "ENERGY"
+  },
+
+  {
+    "id": "17",
+    "power": "1",
+    "level": "1",
+    "team": null,
+    "type": "ENERGY"
+  },
+
+  {
+    "id": "18",
+    "power": "1",
+    "level": "1",
+    "team": null,
+    "type": "ENERGY"
+  },
+
+  {
+    "id": "19",
+    "power": "1",
+    "level": "1",
+    "team": null,
+    "type": "ENERGY"
+  },
+
+  {
+    "id": "20",
+    "power": "1",
+    "level": "1",
+    "team": null,
+    "type": "ENERGY"
+  },
+
+  {
+    "id": "21",
+    "power": "2",
+    "level": "1",
+    "team": null,
+    "type": "ENERGY"
+  },
+  {
+    "id": "22",
+    "power": "2",
+    "level": "1",
+    "team": null,
+    "type": "ENERGY"
+  },
+
+  {
+    "id": "23",
+    "power": "2",
+    "level": "1",
+    "team": null,
+    "type": "ENERGY"
+  },
+
+  {
+    "id": "24",
+    "power": "2",
+    "level": "1",
+    "team": null,
+    "type": "ENERGY"
+  },
+
+  {
+    "id": "25",
+    "power": "2",
+    "level": "1",
+    "team": null,
+    "type": "ENERGY"
+  },
+
+  {
+    "id": "26",
+    "power": "3",
+    "level": "1",
+    "team": null,
+    "type": "ENERGY"
+  },
+
+  {
+    "id": "27",
+    "power": "3",
+    "level": "1",
+    "team": null,
+    "type": "ENERGY"
+  },
+
+  {
+    "id": "28",
+    "power": "3",
+    "level": "1",
+    "team": null,
+    "type": "ENERGY"
+  },
+
+  {
+    "id": "29",
+    "power": "3",
+    "level": "1",
+    "team": null,
+    "type": "ENERGY"
+  },
+
+  {
+    "id": "30",
+    "power": "3",
+    "level": "1",
+    "team": null,
+    "type": "ENERGY"
+  },
+
+  {
+    "id": "31",
+    "power": "1",
+    "level": "1",
+    "team": null,
+    "type": "HOUSE"
+  },
+
+  {
+    "id": "32",
+    "power": "1",
+    "level": "1",
+    "team": null,
+    "type": "HOUSE"
+  },
+
+  {
+    "id": "33",
+    "power": "1",
+    "level": "1",
+    "team": null,
+    "type": "HOUSE"
+  },
+
+  {
+    "id": "34",
+    "power": "1",
+    "level": "1",
+    "team": null,
+    "type": "HOUSE"
+  },
+
+  {
+    "id": "35",
+    "power": "1",
+    "level": "1",
+    "team": null,
+    "type": "HOUSE"
+  },
+
+  {
+    "id": "36",
+    "power": "2",
+    "level": "1",
+    "team": null,
+    "type": "HOUSE"
+  },
+
+  {
+    "id": "37",
+    "power": "2",
+    "level": "1",
+    "team": null,
+    "type": "HOUSE"
+  },
+
+  {
+    "id": "38",
+    "power": "2",
+    "level": "1",
+    "team": null,
+    "type": "HOUSE"
+  },
+
+  {
+    "id": "39",
+    "power": "2",
+    "level": "1",
+    "team": null,
+    "type": "HOUSE"
+  },
+
+  {
+    "id": "40",
+    "power": "2",
+    "level": "1",
+    "team": null,
+    "type": "HOUSE"
+  },
+
+  {
+    "id": "41",
+    "power": "3",
+    "level": "1",
+    "team": null,
+    "type": "HOUSE"
+  },
+
+  {
+    "id": "42",
+    "power": "3",
+    "level": "1",
+    "team": null,
+    "type": "HOUSE"
+  },
+
+  {
+    "id": "43",
+    "power": "3",
+    "level": "1",
+    "team": null,
+    "type": "HOUSE"
+  },
+
+  {
+    "id": "44",
+    "power": "3",
+    "level": "1",
+    "team": null,
+    "type": "HOUSE"
+  },
+
+  {
+    "id": "45",
+    "power": "3",
+    "level": "1",
+    "team": null,
+    "type": "HOUSE"
+  },
+
+  {
+    "id": "45",
+    "power": "1",
+    "level": "1",
+    "team": null,
+    "type": "MONEY"
+  },
+
+  {
+    "id": "46",
+    "power": "1",
+    "level": "1",
+    "team": null,
+    "type": "MONEY"
+  },
+
+  {
+    "id": "47",
+    "power": "1",
+    "level": "1",
+    "team": null,
+    "type": "MONEY"
+  },
+
+  {
+    "id": "48",
+    "power": "1",
+    "level": "1",
+    "team": null,
+    "type": "MONEY"
+  },
+
+  {
+    "id": "49",
+    "power": "1",
+    "level": "1",
+    "team": null,
+    "type": "MONEY"
+  },
+
+  {
+    "id": "50",
+    "power": "1",
+    "level": "1",
+    "team": null,
+    "type": "MONEY"
+  },
+
+  {
+    "id": "51",
+    "power": "1",
+    "level": "1",
+    "team": null,
+    "type": "MONEY"
+  },
+
+  {
+    "id": "52",
+    "power": "2",
+    "level": "1",
+    "team": null,
+    "type": "MONEY"
+  },
+
+  {
+    "id": "53",
+    "power": "2",
+    "level": "1",
+    "team": null,
+    "type": "MONEY"
+  },
+
+  {
+    "id": "54",
+    "power": "2",
+    "level": "1",
+    "team": null,
+    "type": "MONEY"
+  },
+
+  {
+    "id": "55",
+    "power": "2",
+    "level": "1",
+    "team": null,
+    "type": "MONEY"
+  },
+
+  {
+    "id": "56",
+    "power": "2",
+    "level": "1",
+    "team": null,
+    "type": "MONEY"
+  },
+
+  {
+    "id": "57",
+    "power": "3",
+    "level": "1",
+    "team": null,
+    "type": "MONEY"
+  },
+
+  {
+    "id": "58",
+    "power": "3",
+    "level": "1",
+    "team": null,
+    "type": "MONEY"
+  },
+
+  {
+    "id": "59",
+    "power": "3",
+    "level": "1",
+    "team": null,
+    "type": "MONEY"
+  },
+
+  {
+    "id": "60",
+    "power": "3",
+    "level": "1",
+    "team": null,
+    "type": "MONEY"
+  },
+
+  {
+    "id": "61",
+    "power": "4",
+    "level": "1",
+    "team": null,
+    "type": "MONEY"
+  },
+
+  {
+    "id": "62",
+    "power": "4",
+    "level": "1",
+    "team": null,
+    "type": "MONEY"
+  },
+
+  {
+    "id": "63",
+    "power": "4",
+    "level": "1",
+    "team": null,
+    "type": "MONEY"
+  },
+
+  {
+    "id": "64",
+    "power": "1",
+    "level": "1",
+    "team": null,
+    "type": "PLANT"
+  },
+
+  {
+    "id": "65",
+    "power": "1",
+    "level": "1",
+    "team": null,
+    "type": "PLANT"
+  },
+
+  {
+    "id": "66",
+    "power": "1",
+    "level": "1",
+    "team": null,
+    "type": "PLANT"
+  },
+
+  {
+    "id": "67",
+    "power": "1",
+    "level": "1",
+    "team": null,
+    "type": "PLANT"
+  },
+
+  {
+    "id": "68",
+    "power": "1",
+    "level": "1",
+    "team": null,
+    "type": "PLANT"
+  },
+
+  {
+    "id": "69",
+    "power": "1",
+    "level": "1",
+    "team": null,
+    "type": "PLANT"
+  },
+
+  {
+    "id": "70",
+    "power": "2",
+    "level": "1",
+    "team": null,
+    "type": "PLANT"
+  },
+
+  {
+    "id": "71",
+    "power": "2",
+    "level": "1",
+    "team": null,
+    "type": "PLANT"
+  },
+
+  {
+    "id": "72",
+    "power": "2",
+    "level": "1",
+    "team": null,
+    "type": "PLANT"
+  },
+
+  {
+    "id": "73",
+    "power": "2",
+    "level": "1",
+    "team": null,
+    "type": "PLANT"
+  },
+
+  {
+    "id": "74",
+    "power": "2",
+    "level": "1",
+    "team": null,
+    "type": "PLANT"
+  },
+
+  {
+    "id": "75",
+    "power": "3",
+    "level": "1",
+    "team": null,
+    "type": "PLANT"
+  },
+
+  {
+    "id": "76",
+    "power": "3",
+    "level": "1",
+    "team": null,
+    "type": "PLANT"
+  },
+
+  {
+    "id": "77",
+    "power": "3",
+    "level": "1",
+    "team": null,
+    "type": "PLANT"
+  },
+
+  {
+    "id": "78",
+    "power": "3",
+    "level": "1",
+    "team": null,
+    "type": "PLANT"
+  },
+
+  {
+    "id": "79",
+    "power": "4",
+    "level": "1",
+    "team": null,
+    "type": "PLANT"
+  },
+
+  {
+    "id": "80",
+    "power": "4",
+    "level": "1",
+    "team": null,
+    "type": "PLANT"
+  },
+
+  {
+    "id": "81",
+    "power": "4",
+    "level": "1",
+    "team": null,
+    "type": "PLANT"
+  },
+
+  {
+    "id": "82",
+    "power": "1",
+    "level": "1",
+    "team": null,
+    "type": "INSTANT_ACTION"
+  },
+
+  {
+    "id": "83",
+    "power": "2",
+    "level": "1",
+    "team": null,
+    "type": "INSTANT_ACTION"
+  },
+
+  {
+    "id": "84",
+    "power": "3",
+    "level": "1",
+    "team": null,
+    "type": "INSTANT_ACTION"
+  },
+
+  {
+    "id": "85",
+    "power": "4",
+    "level": "1",
+    "team": null,
+    "type": "INSTANT_ACTION"
+  },
+
+  {
+    "id": "86",
+    "power": "5",
+    "level": "1",
+    "team": null,
+    "type": "INSTANT_ACTION"
+  },
+
+  {
+    "id": "87",
+    "power": "1",
+    "level": "1",
+    "team": null,
+    "type": "PERMANENT_ACTION"
+  },
+
+  {
+    "id": "88",
+    "power": "2",
+    "level": "1",
+    "team": null,
+    "type": "PERMANENT_ACTION"
+  },
+
+  {
+    "id": "89",
+    "power": "3",
+    "level": "1",
+    "team": null,
+    "type": "PERMANENT_ACTION"
+  },
+
+  {
+    "id": "90",
+    "power": "4",
+    "level": "1",
+    "team": null,
+    "type": "PERMANENT_ACTION"
+  }
+]

@@ -18,7 +18,7 @@ import it.polito.did.gameskeleton.flappyminigame.FlappyBird
 import it.polito.did.gameskeleton.ui.theme.GameSkeletonTheme
 
 @Composable
-fun MascotteScreen(team: String, onStartMemory: () -> Unit, onStartFlappy: () -> Unit, modifier: Modifier = Modifier) {
+fun MascotteScreen(team: String, onStartMemory: () -> Unit, onStartFlappy: () -> Unit, onStartQuiz: () -> Unit, modifier: Modifier = Modifier) {
     GameSkeletonTheme(team = team) {
         Box(
             modifier
@@ -39,6 +39,11 @@ fun MascotteScreen(team: String, onStartMemory: () -> Unit, onStartFlappy: () ->
                 modifier = modifier.align(Alignment.Center),
                 onClick = {onStartFlappy()}) {
                 Text("GO TO FLAPPY")
+            }
+            Button(
+                modifier = modifier.align(Alignment.Center),
+                onClick = {onStartQuiz()}) {
+                Text("GO TO QUIZ")
             }
         }
     }

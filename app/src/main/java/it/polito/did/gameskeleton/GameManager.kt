@@ -24,6 +24,8 @@ class GameManager(private val scope:CoroutineScope) {
     private val firebase = Firebase.database(URL)
     private val firebaseAuth = Firebase.auth
     private var playerName = String()
+    private var currentTeam = Team()
+    private var currentPlayer = Player()
 
     init {
         //firebase.setLogLevel(Logger.Level.DEBUG)
@@ -182,6 +184,7 @@ class GameManager(private val scope:CoroutineScope) {
                         .setValue("").await()
                     watchPlayers()
                     watchScreen()
+                    //ref.child("Quiz").setValue("")
                 } else {
                     mutableScreenName.value = ScreenName.Error("Invalid gameId")
                 }
@@ -211,16 +214,33 @@ class GameManager(private val scope:CoroutineScope) {
     }
 
     fun endTurn(teams : Teams){
-        //prendere riferimento di chi ha appena schiacciato il bottone di endturn
+        // TODO prendere riferimento di chi ha appena schiacciato il bottone di endturn
         //disabilitare modifiche alla sua squadra
         //cambiare il riferimento alla squadra in possesso del turno
         //cambiare il riferimento al capitano della squadra
         //avviare schermata mascotte passando il riferimento della squadra corrente
     }
 
+    fun selectCaptain(){
+        //TODO selezionare il capitano del turno
+    }
+
+    fun changeTurn(){
+        //TODO cambiare squadra per turno
+    }
+
+    fun endPhase(){
+        //TODO separatore tra le fasi + calcolo classifica
+    }
+
     fun startFlappy() {
         mutableScreenName.value = ScreenName.Flappy
-        //TODO try catch da mettere a posto
+        //TODO try catch da mettere a posto e impostare schermata solo per un team
+    }
+
+    fun startQuiz(){
+        mutableScreenName.value = ScreenName.Quiz
+        //TODO try catch da mettere a posto e impostare schermata solo per un team
     }
 
     fun startMemory() {
@@ -241,6 +261,18 @@ class GameManager(private val scope:CoroutineScope) {
         mutableScreenName.value = ScreenName.Memory
 
         //TODO try catch da mettere a posto
+    }
+
+    fun sendFlappyResult(){
+        //TODO calcolare e inviare al server il punteggio di squadra flappy
+    }
+
+    fun sendMemoryResult(){
+        //TODO calcolare e inviare al server il punteggio di squadra memory
+    }
+
+    fun sendQuizResult(){
+        //TODO calcolare e inviare al server il punteggio di squadra quiz
     }
 
     fun getEmojis(): LiveData<MutableList<EmojiModel>> {
