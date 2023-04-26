@@ -2,274 +2,431 @@ package it.polito.did.gameskeleton
 
 object ConstantCards {
 
-    val transCard1 = Card(
+    private val cardsList = ArrayList<Card>()
+    private val instantCardsList = ArrayList<Card>()
+    private val permanentCardsList = ArrayList<Card>()
+
+    private val transCard1 = Card(
         0,1, 1
     )
-    val transCard2 = Card(
+    private val transCard2 = Card(
         0,2, 1
     )
-    val transCard3 = Card(
+    private val transCard3 = Card(
         0,3, 1
     )
-    val transCard4 = Card(
+    private val transCard4 = Card(
         0,4, 1
     )
-    val transCard5 = Card(
+    private val transCard5 = Card(
         0,5, 1
     )
-    val transCard6 = Card(
+    private val transCard6 = Card(
         0,6, 2
     )
-    val transCard7 = Card(
+    private val transCard7 = Card(
         0,7, 2
     )
-    val transCard8 = Card(
+    private val transCard8 = Card(
         0,8, 2
     )
-    val transCard9 = Card(
+    private val transCard9 = Card(
         0,9, 2
     )
-    val transCard10 = Card(
+    private val transCard10 = Card(
         0,10, 2
     )
-    val transCard11 = Card(
+    private val transCard11 = Card(
         0,11, 3
     )
-    val transCard12 = Card(
+    private val transCard12 = Card(
         0,12, 3
     )
-    val transCard13 = Card(
+    private val transCard13 = Card(
         0,13, 3
     )
-    val transCard14 = Card(
+    private val transCard14 = Card(
         0,14, 3
     )
-    val transCard15 = Card(
+    private val transCard15 = Card(
         0,15, 3
     )
-    val powerCard1 = Card(
+    private val powerCard1 = Card(
         1, 16, 1
     )
-    val powerCard2 = Card(
+    private val powerCard2 = Card(
         1, 17, 1
     )
-    val powerCard3 = Card(
+    private val powerCard3 = Card(
         1, 18, 1
     )
-    val powerCard4 = Card(
+    private val powerCard4 = Card(
         1, 19, 1
     )
-    val powerCard5 = Card(
+    private val powerCard5 = Card(
         1, 20, 1
     )
-    val powerCard6 = Card(
+    private val powerCard6 = Card(
         1, 21, 2
     )
-    val powerCard7 = Card(
+    private val powerCard7 = Card(
         1, 22, 2
     )
-    val powerCard8 = Card(
+    private val powerCard8 = Card(
         1, 23, 2
     )
-    val powerCard9 = Card(
+    private val powerCard9 = Card(
         1, 24, 2
     )
-    val powerCard10 = Card(
+    private val powerCard10 = Card(
         1, 25, 2
     )
-    val powerCard11 = Card(
+    private val powerCard11 = Card(
         1, 26, 3
     )
-    val powerCard12 = Card(
+    private val powerCard12 = Card(
         1, 27, 3
     )
-    val powerCard13 = Card(
+    private val powerCard13 = Card(
         1, 28, 3
     )
-    val powerCard14 = Card(
+    private val powerCard14 = Card(
         1, 29, 3
     )
-    val powerCard15 = Card(
+    private val powerCard15 = Card(
         1, 30, 3
     )
-    val houseCard1 = Card(
+    private val houseCard1 = Card(
         2, 31, 1
     )
-    val houseCard2 = Card(
+    private val houseCard2 = Card(
         2, 32, 1
     )
-    val houseCard3 = Card(
+    private val houseCard3 = Card(
         2, 33, 1
     )
-    val houseCard4 = Card(
+    private val houseCard4 = Card(
         2, 34, 1
     )
-    val houseCard5 = Card(
+    private val houseCard5 = Card(
         2, 35, 1
     )
-    val houseCard6 = Card(
+    private val houseCard6 = Card(
         2, 36, 2
     )
-    val houseCard7 = Card(
+    private val houseCard7 = Card(
         2, 37, 2
     )
-    val houseCard8 = Card(
+    private val houseCard8 = Card(
         2, 38, 2
     )
-    val houseCard9 = Card(
+    private val houseCard9 = Card(
         2, 39, 2
     )
-    val houseCard10 = Card(
+    private val houseCard10 = Card(
         2, 40, 2
     )
-    val houseCard11 = Card(
+    private val houseCard11 = Card(
         2, 41, 3
     )
-    val houseCard12 = Card(
+    private val houseCard12 = Card(
         2, 42, 3
     )
-    val houseCard13 = Card(
+    private val houseCard13 = Card(
         2, 43, 3
     )
-    val houseCard14 = Card(
+    private val houseCard14 = Card(
         2, 44, 3
     )
-    val houseCard15 = Card(
+    private val houseCard15 = Card(
         2, 45, 3
     )
-    val moneyCard1 = Card(
+    private val moneyCard1 = Card(
         3, 46, 1
     )
-    val moneyCard2 = Card(
+    private val moneyCard2 = Card(
         3, 47, 1
     )
-    val moneyCard3 = Card(
+    private val moneyCard3 = Card(
         3, 48, 1
     )
-    val moneyCard4 = Card(
+    private val moneyCard4 = Card(
         3, 49, 1
     )
-    val moneyCard5 = Card(
+    private val moneyCard5 = Card(
         3, 50, 1
     )
-    val moneyCard6 = Card(
+    private val moneyCard6 = Card(
         3, 51, 1
     )
-    val moneyCard7 = Card(
+    private val moneyCard7 = Card(
         3, 52, 2
     )
-    val moneyCard8 = Card(
+    private val moneyCard8 = Card(
         3, 53, 2
     )
-    val moneyCard9 = Card(
+    private val moneyCard9 = Card(
         3, 54, 2
     )
-    val moneyCard10 = Card(
+    private val moneyCard10 = Card(
         3, 55, 2
     )
-    val moneyCard11 = Card(
+    private val moneyCard11 = Card(
         3, 56, 2
     )
-    val moneyCard12 = Card(
+    private val moneyCard12 = Card(
         3, 57, 3
     )
-    val moneyCard13 = Card(
+    private val moneyCard13 = Card(
         3, 58, 3
     )
-    val moneyCard14 = Card(
+    private val moneyCard14 = Card(
         3, 59, 3
     )
-    val moneyCard15 = Card(
+    private val moneyCard15 = Card(
         3, 60, 3
     )
-    val moneyCard16 = Card(
+    private val moneyCard16 = Card(
         3, 61, 4
     )
-    val moneyCard17 = Card(
+    private val moneyCard17 = Card(
         3, 62, 4
     )
-    val moneyCard18 = Card(
+    private val moneyCard18 = Card(
         3, 63, 4
     )
-    val energyCard1 = Card(
+    private val energyCard1 = Card(
         4, 64, 1
     )
-    val energyCard2 = Card(
+    private val energyCard2 = Card(
         4, 65, 1
     )
-    val energyCard3 = Card(
+    private val energyCard3 = Card(
         4, 66, 1
     )
-    val energyCard4 = Card(
+    private val energyCard4 = Card(
         4, 67, 1
     )
-    val energyCard5 = Card(
+    private val energyCard5 = Card(
         4, 68, 1
     )
-    val energyCard6 = Card(
+    private val energyCard6 = Card(
         4, 69, 1
     )
-    val energyCard7 = Card(
+    private val energyCard7 = Card(
         4, 70, 2
     )
-    val energyCard8 = Card(
+    private val energyCard8 = Card(
         4, 71, 2
     )
-    val energyCard9 = Card(
+    private val energyCard9 = Card(
         4, 72, 2
     )
-    val energyCard10 = Card(
+    private val energyCard10 = Card(
         4, 73, 2
     )
-    val energyCard11 = Card(
+    private val energyCard11 = Card(
         4, 74, 2
     )
-    val energyCard12 = Card(
+    private val energyCard12 = Card(
         4, 75, 3
     )
-    val energyCard13 = Card(
+    private val energyCard13 = Card(
         4, 76, 3
     )
-    val energyCard14 = Card(
+    private val energyCard14 = Card(
         4, 77, 3
     )
-    val energyCard15 = Card(
+    private val energyCard15 = Card(
         4, 78, 3
     )
-    val energyCard16 = Card(
+    private val energyCard16 = Card(
         4, 79, 4
     )
-    val energyCard17 = Card(
+    private val energyCard17 = Card(
         4, 80, 4
     )
-    val energyCard18 = Card(
+    private val energyCard18 = Card(
         4, 81, 4
     )
-    val instActCard1 = Card(
+    private val instActCard1 = Card(
         5, 82, 1
     )
-    val instActCard2 = Card(
+    private val instActCard2 = Card(
         5, 83, 2
     )
-    val instActCard3 = Card(
+    private val instActCard3 = Card(
         5, 84, 3
     )
-    val instActCard4 = Card(
+    private val instActCard4 = Card(
         5, 85, 4
     )
-    val instActCard5 = Card(
+    private val instActCard5 = Card(
         5, 86, 5
     )
-    val permActCard1 = Card(
+    private val permActCard1 = Card(
         6, 87, 1
     )
-    val permActCard2 = Card(
+    private val permActCard2 = Card(
         6, 88, 2
     )
-    val permActCard3 = Card(
+    private val permActCard3 = Card(
         6, 89, 3
     )
-    val permActCard4 = Card(
+    private val permActCard4 = Card(
         6, 90, 4
     )
+
+    fun shuffleInstantCards() {
+        instantCardsList.add(instActCard1)
+        instantCardsList.add(instActCard2)
+        instantCardsList.add(instActCard3)
+        instantCardsList.add(instActCard4)
+        instantCardsList.add(instActCard5)
+
+        instantCardsList.shuffle()
+    }
+
+    fun shufflePermanentCards() {
+        permanentCardsList.add(permActCard1)
+        permanentCardsList.add(permActCard2)
+        permanentCardsList.add(permActCard3)
+        permanentCardsList.add(permActCard4)
+
+        permanentCardsList.shuffle()
+    }
+
+
+    fun getCardList1() : ArrayList<Card> {
+        cardsList.add(transCard1)
+        cardsList.add(transCard6)
+        cardsList.add(transCard11)
+        cardsList.add(powerCard1)
+        cardsList.add(powerCard2)
+        cardsList.add(powerCard3)
+        cardsList.add(houseCard1)
+        cardsList.add(houseCard2)
+        cardsList.add(houseCard3)
+        cardsList.add(houseCard4)
+        cardsList.add(moneyCard1)
+        cardsList.add(moneyCard2)
+        cardsList.add(moneyCard3)
+        cardsList.add(moneyCard4)
+        cardsList.add(moneyCard5)
+        cardsList.add(moneyCard7)
+        cardsList.add(moneyCard8)
+        cardsList.add(moneyCard9)
+        cardsList.add(moneyCard12)
+        cardsList.add(energyCard1)
+        cardsList.add(energyCard2)
+        cardsList.add(energyCard3)
+        cardsList.add(energyCard4)
+        cardsList.add(energyCard5)
+        cardsList.add(energyCard7)
+        cardsList.add(energyCard8)
+        cardsList.add(energyCard9)
+        cardsList.add(energyCard12)
+
+        cardsList.add(instantCardsList[0])
+        cardsList.add(permanentCardsList[0])
+
+        cardsList.shuffle()
+        return cardsList
+    }
+
+    fun getCardList2() : ArrayList<Card> {
+        cardsList.clear()
+
+        cardsList.add(transCard2)
+        cardsList.add(transCard7)
+        cardsList.add(transCard8)
+        cardsList.add(transCard12)
+        cardsList.add(transCard13)
+        cardsList.add(powerCard4)
+        cardsList.add(powerCard5)
+        cardsList.add(powerCard6)
+        cardsList.add(powerCard7)
+        cardsList.add(powerCard8)
+        cardsList.add(houseCard5)
+        cardsList.add(houseCard6)
+        cardsList.add(houseCard7)
+        cardsList.add(houseCard8)
+        cardsList.add(moneyCard6)
+        cardsList.add(moneyCard10)
+        cardsList.add(moneyCard11)
+        cardsList.add(moneyCard13)
+        cardsList.add(moneyCard16)
+        cardsList.add(moneyCard17)
+        cardsList.add(energyCard6)
+        cardsList.add(energyCard10)
+        cardsList.add(energyCard11)
+        cardsList.add(energyCard13)
+        cardsList.add(energyCard16)
+        cardsList.add(energyCard17)
+
+        cardsList.add(instantCardsList[1])
+        cardsList.add(instantCardsList[2])
+        cardsList.add(permanentCardsList[1])
+        cardsList.add(permanentCardsList[2])
+
+        cardsList.shuffle()
+
+        return cardsList
+    }
+
+    fun getCardList3() : ArrayList<Card> {
+        cardsList.clear()
+
+        cardsList.add(transCard3)
+        cardsList.add(transCard4)
+        cardsList.add(transCard5)
+        cardsList.add(transCard9)
+        cardsList.add(transCard10)
+        cardsList.add(transCard14)
+        cardsList.add(transCard15)
+        cardsList.add(powerCard9)
+        cardsList.add(powerCard10)
+        cardsList.add(powerCard11)
+        cardsList.add(powerCard12)
+        cardsList.add(powerCard13)
+        cardsList.add(powerCard14)
+        cardsList.add(powerCard15)
+        cardsList.add(houseCard9)
+        cardsList.add(houseCard10)
+        cardsList.add(houseCard11)
+        cardsList.add(houseCard12)
+        cardsList.add(houseCard13)
+        cardsList.add(houseCard14)
+        cardsList.add(houseCard15)
+        cardsList.add(moneyCard14)
+        cardsList.add(moneyCard15)
+        cardsList.add(moneyCard18)
+        cardsList.add(energyCard14)
+        cardsList.add(energyCard15)
+        cardsList.add(energyCard18)
+
+        cardsList.add(instantCardsList[3])
+        cardsList.add(instantCardsList[4])
+        cardsList.add(permanentCardsList[3])
+
+        cardsList.shuffle()
+
+        return cardsList
+    }
+
+    fun displayCards() : ArrayList<Card>{
+        var displayedCards = ArrayList<Card>()
+        for(i in 0..4)
+            displayedCards[i] = cardsList[i]
+        return displayedCards
+    }
+
+    fun pickCard(c : Int) {
+        cardsList.removeAt(c)
+        //TODO da mettere chiamata ad assigncard passando riferimento di carta e squadra
+    }
+
+    fun assignCard() {
+        //TODO eventualmente da ausilio per associare team e carta
+    }
 }

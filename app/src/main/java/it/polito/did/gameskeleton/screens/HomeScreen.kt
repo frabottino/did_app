@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import it.polito.did.gameskeleton.ui.theme.GameSkeletonTheme
 
 @Composable
-fun HomeScreen(team : String) {
+fun HomeScreen(team : String, onMascotte: () -> Unit,) {
     GameSkeletonTheme(team = team) {
         Box(
             modifier = Modifier
@@ -35,7 +35,7 @@ fun HomeScreen(team : String) {
             Spacer(Modifier.height(32.dp))
             Button(
                 modifier = Modifier.align(Alignment.Center),
-                onClick = {}) {
+                onClick = {onMascotte()}) {
                 Text("Okay")
             }
         }
@@ -46,5 +46,5 @@ fun HomeScreen(team : String) {
 @Composable
 @Preview
 fun HomeScreenPreview() {
-    HomeScreen("")
+    HomeScreen("") {}
 }

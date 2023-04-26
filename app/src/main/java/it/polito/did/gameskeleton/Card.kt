@@ -15,15 +15,16 @@ class Card(
     val type = String
     //val image : Int
 
-    fun displayCards() {
-        //TODO selezionare le 5 carte o le 3+2 da mostrare
+
+    fun getId() : Int{
+        return idC
     }
 
-    fun pickCard() {
-        //TODO metodo per assegnare carta al team, forse da mettere in altra classe capiamo
+    fun getPower() : Int{
+        return powC
     }
 
-    fun assignCard() {
-        //TODO eventualmente da ausilio per associare team e carta
+    fun getType() : Int{
+        return typeC
     }
 }

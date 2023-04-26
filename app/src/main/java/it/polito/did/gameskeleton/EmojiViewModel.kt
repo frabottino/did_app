@@ -77,7 +77,10 @@ class EmojiViewModel : ViewModel() {
         if (visibleCount <= 0) {
             //loadEmojis()
             //msn.value = ScreenName.Home("14")
-            msn.value = ScreenName.Cards("14")  //TODO mettere a posto il parametro string da passare
+            msn.value = ScreenName.Cards("14") //TODO mettere a posto il parametro string da passare
+            //var vm = GameViewModel() //TODO singleton
+            val vm = GameViewModel.getInstance()
+            vm.nextTurn()
             return
         }
 

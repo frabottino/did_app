@@ -2,9 +2,25 @@ package it.polito.did.gameskeleton
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import it.polito.did.gameskeleton.flappyminigame.FlappyBird
 
 class GameViewModel: ViewModel() {
+
+    companion object {
+        @Volatile
+        private var instance: GameViewModel? = null
+
+        fun getInstance(): GameViewModel {
+            if (instance == null) {
+                synchronized(this) {
+                    if (instance == null) {
+                        instance = GameViewModel()
+                    }
+                }
+            }
+            return instance!!
+        }
+    }
+
     private val gameManager = GameManager(viewModelScope)
 
     fun onCreateNewGame() = gameManager.createNewGame()
@@ -14,6 +30,9 @@ class GameViewModel: ViewModel() {
     fun onStartFlappy() = gameManager.startFlappy()
     fun onStartQuiz() = gameManager.startQuiz()
     fun onGoHome() = gameManager.goToHome()
+    fun onGoMascotte() = gameManager.goToMascotte()
+    fun getTurnFromGM() = gameManager.getTurn()
+    fun nextTurn() = gameManager.changeTurn()
 
     val players = gameManager.players
     val screenName = gameManager.screenName

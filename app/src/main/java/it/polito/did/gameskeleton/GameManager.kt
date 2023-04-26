@@ -6,11 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import it.polito.did.gameskeleton.flappyminigame.FlappyBird
-import it.polito.did.gameskeleton.flappyminigame.Game
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -26,6 +25,14 @@ class GameManager(private val scope:CoroutineScope) {
     private var playerName = String()
     private var currentTeam = Team()
     private var currentPlayer = Player()
+    private var player = Player()
+    private var gameID : Int = 0
+    private var miniPts : Int = 0
+    private val teamNames = listOf("Red", "Blue", "Green", "Yellow")
+    private var sizes = ArrayList<Int>()
+    private var turn : Int = 1
+    private var phase : Int = 0
+    private var capId : Int = 0
 
     init {
         //firebase.setLogLevel(Logger.Level.DEBUG)
@@ -61,17 +68,21 @@ class GameManager(private val scope:CoroutineScope) {
 
     private fun assignTeam(players: Map<String,String>): Map<String,String>? {
         val teams = players.keys.groupBy { players[it].toString() } //raggruppa i giocatori per squadra
-        val teamNames = listOf("Red", "Blue", "Green", "Yellow")
-        val sizes = teamNames.map{ teams[it]?.size ?: 0 } //guarda il numero di componenti per ogni squadra
-        println(sizes)
-        val pickAGuy = teamNames.map{ teams[it]?.get(1)} //piglia il quartetto di giocatori che sono nell'indice x della squadra
+        println("id $players.keys.size")
+        sizes = teamNames.map{ teams[it]?.size ?: 0 } as ArrayList<Int> //guarda il numero di componenti per ogni squadra
+        val pickAGuy = teamNames.map{ teams[it]?.get(0)?: "" } //piglia il quartetto di giocatori che sono nell'indice x della squadra
         val min: Int = sizes.stream().min(Integer::compare).get() //guarda il valore più basso di componenti in una squadra
+        //println("min $min")
+        println("size1 $sizes")
         var index = sizes.indexOf(min) //indica l'indice della squadra con meno giocatori
+        //println("team ${teamNames[index]}")
         val updatedPlayers = players.toMutableMap() //lista dei giocatori con squadra
         var changed = false
-        println("players " + updatedPlayers)
-        println("the guy is " + pickAGuy)
-        println(teamNames[1])
+        //println("players $updatedPlayers")
+        //println("the guy is $pickAGuy")
+        //println("the captain is ${players.keys}")
+        player.setPlayerId(min)
+        player.setPlayerTeam(index)
         teams[""]?.forEach {
             updatedPlayers[it] = teamNames[index] //lista giocatori aggiornata
             index = (index +1) % teamNames.size //aggiorna indice di squadra meno popolata
@@ -124,6 +135,7 @@ class GameManager(private val scope:CoroutineScope) {
             try {
                 val random = Random().nextInt( 89999) + 10000
                 val ref = firebase.getReference(random.toString())
+                gameID = random
                 //val ref = firebase.reference.push()
                 Log.d("GameManager","Creating match ${ref.key}")
                 ref.setValue(
@@ -133,6 +145,7 @@ class GameManager(private val scope:CoroutineScope) {
                         "screen" to "WaitingStart"
                     )
                 ).await()
+                setDatabase(ref)
                 Log.d("GameManager", "Match creation succeeded")
                 mutableMatchId.value = ref.key
                 mutableScreenName.value = ScreenName.SetupMatch(ref.key!!)
@@ -213,23 +226,134 @@ class GameManager(private val scope:CoroutineScope) {
         //TODO try catch da mettere a posto
     }
 
+    fun goToMascotte(){
+        mutableScreenName.value = ScreenName.Mascotte(getMyTeam())
+        //TODO try catch da mettere a posto
+    }
+
+    fun setDatabase(ref : DatabaseReference){
+        val red = ref.child("Red")
+        val blue = ref.child("Blue")
+        val yellow = ref.child("Yellow")
+        val green = ref.child("Green")
+        val redpal = ref.child("Red").child("MiniPoints")
+        val redbro = ref.child("Red").child("MiniPoints").addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                println("ao " + snapshot.value)
+            }
+            override fun onCancelled(error: DatabaseError) {
+                mutableScreenName.value = ScreenName.Error(error.message)
+            }
+        }) //TODO capire perchè qua c'è da fare ogni volta sto ondatachange mi sa peso
+            //TODO occhio che sto onDataChange può essere molto utile per gestire fine delle fasi e simili
+        val phase = ref.child("Phase")
+
+        phase.setValue(0)
+
+        phase.addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                println("onDataChange with ${snapshot.value}")
+                if(snapshot.value.toString() != "0"){
+                    endPhase()
+                }
+                else println("else condition with ${snapshot.value}")
+            }
+            override fun onCancelled(error: DatabaseError) {
+                mutableScreenName.value = ScreenName.Error(error.message)
+            }
+        })
+
+
+        red.setValue(
+            mapOf(
+                "MiniPoints" to 0,
+                "VictoryPoints" to 0,
+                "Cards" to 0,
+                "Money" to 0,
+                "Energy" to 0
+            )
+        )
+
+        redpal.get().addOnSuccessListener {
+            Log.i("firebase", "Got value ${it.value}")
+        }.addOnFailureListener{
+            Log.e("firebase", "Error getting data", it)
+        }
+
+        blue.setValue(
+            mapOf(
+                "MiniPoints" to 0,
+                "VictoryPoints" to 0,
+                "Cards" to 0,
+                "Money" to 0,
+                "Energy" to 0
+            )
+        )
+        yellow.setValue(
+            mapOf(
+                "MiniPoints" to 0,
+                "VictoryPoints" to 0,
+                "Cards" to 0,
+                "Money" to 0,
+                "Energy" to 0
+            )
+        )
+        green.setValue(
+            mapOf(
+                "MiniPoints" to 0,
+                "VictoryPoints" to 0,
+                "Cards" to 0,
+                "Money" to 0,
+                "Energy" to 0
+            )
+        )
+    }
+
     fun endTurn(teams : Teams){
         // TODO prendere riferimento di chi ha appena schiacciato il bottone di endturn
         //disabilitare modifiche alla sua squadra
         //cambiare il riferimento alla squadra in possesso del turno
-        //cambiare il riferimento al capitano della squadra
         //avviare schermata mascotte passando il riferimento della squadra corrente
     }
 
-    fun selectCaptain(){
-        //TODO selezionare il capitano del turno
-    }
-
     fun changeTurn(){
-        //TODO cambiare squadra per turno
+        val oldCapTeam = currentPlayer.getPlayerTeam()
+        println("old cap id $capId , team $oldCapTeam")
+        println("sizes $sizes")
+        println("teamnames $teamNames")
+        capId++
+        currentPlayer.setPlayerTeam((oldCapTeam + 1) % teamNames.size)
+        currentPlayer.setPlayerId(capId)
+        if(currentPlayer.getPlayerTeam() == 0){
+            capId++
+            println("old turn $turn")
+            if (turn++ == 4){
+                turn = 1
+                firebase.getReference(matchId.toString()).child("Phase").setValue(phase + 1)
+            }
+            println("now turn $turn")
+        }
+        //currentPlayer.setPlayerId(capId % sizes[currentPlayer.getPlayerTeam()])
+        println("now id ${currentPlayer.getPlayerId()}, team ${currentPlayer.getPlayerTeam()}")
     }
 
-    fun endPhase(){
+    fun getTurn() : Int{
+        //return turn TODO questo è quello giusto
+        return (capId + 1)
+    }
+
+    fun endPhase() {
+        val ref = firebase.getReference(gameID.toString())
+
+        val red = ref.child("Red").child("MiniPoints")
+        val blue = ref.child("Blue").child("MiniPoints")
+        val yellow = ref.child("Yellow").child("MiniPoints")
+        val green = ref.child("Green").child("MiniPoints")
+
+        phase++
+        println("endphase here")
+
+
         //TODO separatore tra le fasi + calcolo classifica
     }
 
@@ -240,6 +364,7 @@ class GameManager(private val scope:CoroutineScope) {
 
     fun startQuiz(){
         mutableScreenName.value = ScreenName.Quiz
+        firebase.getReference(gameID.toString()).child("Phase").setValue(1)
         //TODO try catch da mettere a posto e impostare schermata solo per un team
     }
 
@@ -263,16 +388,10 @@ class GameManager(private val scope:CoroutineScope) {
         //TODO try catch da mettere a posto
     }
 
-    fun sendFlappyResult(){
-        //TODO calcolare e inviare al server il punteggio di squadra flappy
-    }
-
-    fun sendMemoryResult(){
-        //TODO calcolare e inviare al server il punteggio di squadra memory
-    }
-
-    fun sendQuizResult(){
-        //TODO calcolare e inviare al server il punteggio di squadra quiz
+    fun sendMiniResult(pts : Int, team : String) {
+        miniPts += pts
+        firebase.getReference(gameID.toString()).child(team).child("MiniPoints").setValue(pts)
+        //TODO calcolare e inviare al server il punteggio di squadra del minigame, mettere riferimento a squadra
     }
 
     fun getEmojis(): LiveData<MutableList<EmojiModel>> {

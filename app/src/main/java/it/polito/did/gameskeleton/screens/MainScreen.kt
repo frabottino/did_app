@@ -14,7 +14,8 @@ import it.polito.did.gameskeleton.flappyminigame.FlappyBird
 
 @Composable
 fun MainScreen(modifier: Modifier = Modifier) {
-    val vm: GameViewModel = viewModel()
+    //val vm: GameViewModel = viewModel() //TODO singleton
+    val vm = GameViewModel.getInstance()
     val players = vm.players.observeAsState()
     when (val screenName = vm.screenName.observeAsState().value) {
         is ScreenName.Splash -> SplashScreen(modifier)
@@ -31,7 +32,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
             vm::onStartMemory,
             vm,
             modifier)
-        is ScreenName.Home -> BottomNav(screenName.team, modifier)
+        is ScreenName.Home -> BottomNav(screenName.team, vm::onGoMascotte, modifier)
         is ScreenName.Mascotte -> MascotteScreen(
             screenName.team,
             vm::onStartMemory,
