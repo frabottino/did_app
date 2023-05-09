@@ -23,6 +23,7 @@ import it.polito.did.gameskeleton.ui.theme.GameSkeletonTheme
 fun CustomButton(
     text: String,
     modifier: Modifier = Modifier,
+    textModifier: Modifier = Modifier,
     onClick: () -> Unit
 )
 {
@@ -32,7 +33,7 @@ fun CustomButton(
         shape = RoundedCornerShape(20),
         border = BorderStroke(2.dp, Color.Black)
     ) {
-        Text(text, modifier = Modifier.padding(10.dp))
+        Text(text, modifier = Modifier.padding(10.dp).then(textModifier))
     }
 }
 

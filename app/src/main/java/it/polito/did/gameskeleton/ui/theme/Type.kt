@@ -17,6 +17,7 @@ val comfortaaFamily = FontFamily(
 )
 // Set of Material typography styles to start with
 val Typography = Typography(
+    comfortaaFamily,
     body1 = TextStyle(
         fontFamily = comfortaaFamily,
         fontWeight = FontWeight.Normal,

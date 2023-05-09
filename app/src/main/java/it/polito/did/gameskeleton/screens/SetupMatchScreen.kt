@@ -2,9 +2,6 @@ package it.polito.did.gameskeleton.screens
 
 import android.graphics.Color
 import android.util.Log
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -16,105 +13,117 @@ import it.polito.did.gameskeleton.ui.theme.GameSkeletonTheme
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
+import kotlin.math.min
 
 @Composable
-fun SetupMatchScreen(matchId: String,
-                     players: State<Map<String,String>?>,
-                     onStartMatch: () -> Unit,
-                     modifier: Modifier = Modifier) {
+fun SetupMatchScreen(
+    matchId: String,
+    players: State<Map<String, String>?>,
+    onStartMatch: () -> Unit,
+    modifier: Modifier = Modifier
+) {
 
-    GenericScreen(title = "Waiting for Players", modifier) {
-        BoxWithConstraints() {
-            if (constraints.maxHeight> constraints.maxWidth) {
-                val size = constraints.maxWidth*9/10;
-                var encoder = QRGEncoder(matchId, null, QRGContents.Type.TEXT, size)
-                encoder.colorWhite = Color.BLACK
-                encoder.colorBlack = Color.WHITE
-                Column(Modifier.fillMaxSize()) {
-                    Spacer(Modifier.weight(1f))
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
                     Text(
-                        text = matchId,
+                        "Waiting for players...",
+                        textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.h4,
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                        modifier = Modifier.fillMaxWidth()
                     )
-                    Image(
-                        encoder.bitmap.asImageBitmap(),
-                        "QRCode",
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    )
-                    Spacer(Modifier.weight(1f))
-                    Text(
-                        text = "Connected players: ${players.value?.toString() ?: 0}",
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    )
-                    Spacer(Modifier.weight(1f))
-                    Button(
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally),
-                        onClick = { onStartMatch() }) {
-                        Text("Start Match")
-                    }
-                    Spacer(Modifier.weight(1f))
-                }
-            } else {
-                val size = constraints.maxHeight*9/10;
-                var encoder = QRGEncoder(matchId, null, QRGContents.Type.TEXT, size)
-                encoder.colorWhite = Color.BLACK
-                encoder.colorBlack = Color.WHITE
-                Row(Modifier.fillMaxSize()) {
-                    Column(Modifier.fillMaxHeight().weight(1f)) {
-                        Spacer(Modifier.weight(1f))
-                        Text(
-                            text = matchId,
-                            style = MaterialTheme.typography.h4,
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                        )
-                        Image(
-                            encoder.bitmap.asImageBitmap(),
-                            "QRCode",
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                        )
-                        Spacer(Modifier.weight(1f))
-                    }
-                    Column(Modifier.fillMaxHeight().weight(1f)) {
-                        Spacer(Modifier.weight(1f))
-                        Text(
-                            text = "Connected players: ${players.value?.size ?: 0}",
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                        )
-                        Spacer(Modifier.weight(1f))
-                        Button(
-                            modifier = Modifier
-                                .align(Alignment.CenterHorizontally),
-                            onClick = { onStartMatch() }) {
-                            Text("Start Match")
-                        }
-                        Spacer(Modifier.weight(1f))
-
-                    }
-                }
-            }
-        }
-        Column(Modifier.fillMaxSize()) {
-            Spacer(Modifier.weight(1f))
-            Text(
-                text = matchId,
-                style = MaterialTheme.typography.body1,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+                },
+                Modifier.height(100.dp)
             )
-            BoxWithConstraints() {
-                val size = (Math.min(constraints.maxHeight, constraints.maxWidth) * .95f).toInt()
+        }
+    ) {
+        Column(Modifier.fillMaxWidth()) {
+            Spacer(Modifier.weight(1f))
+
+            BoxWithConstraints(
+                Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.6f)
+                    .align(Alignment.CenterHorizontally)
+            ) {
+                val size =
+                    (Math.min(constraints.maxHeight, constraints.maxWidth)).toInt()
                 var encoder = QRGEncoder(matchId, null, QRGContents.Type.TEXT, size)
                 encoder.colorWhite = Color.BLACK
                 encoder.colorBlack = Color.WHITE
                 Log.d("GameVM", "size: $size")
-                Image(
-                    encoder.bitmap.asImageBitmap(),
-                    "QRCode",
-                    modifier = Modifier.align(Alignment.Center)
-                )
+                val wRatio = if (constraints.maxHeight > constraints.maxWidth) 0.8f else 0.5f
+                Card(
+                    backgroundColor = MaterialTheme.colors.primary,
+                    elevation = 10.dp,
+                    modifier = Modifier
+                        .fillMaxWidth(wRatio)
+                        .fillMaxHeight()
+                        .align(
+                            Alignment.Center
+                        )
+
+                ) {
+                    if (constraints.maxHeight > constraints.maxWidth) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Image(
+                                encoder.bitmap.asImageBitmap(),
+                                "QRCode",
+                                modifier = Modifier
+                                    .fillMaxWidth(.9f)
+                                    .padding(20.dp)
+                                    .padding(top = 20.dp)
+                            )
+                            Text(
+                                text = matchId,
+                                style = MaterialTheme.typography.h4,
+
+                                )
+                        }
+                    } else {
+                        Row() {
+                            Column(
+                                Modifier.fillMaxWidth(.5f),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Box(Modifier.fillMaxSize()) {
+                                    Image(
+                                        encoder.bitmap.asImageBitmap(),
+                                        "QRCode",
+                                        alignment = Alignment.Center,
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .padding(10.dp)
+                                    )
+                                }
+                            }
+                            Column(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .fillMaxHeight(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = matchId,
+                                    style = MaterialTheme.typography.h4,
+                                    textAlign = TextAlign.Center,
+                                )
+                            }
+                        }
+                    }
+                }
+
             }
             Spacer(Modifier.weight(1f))
             Text(
@@ -122,24 +131,35 @@ fun SetupMatchScreen(matchId: String,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
             Spacer(Modifier.weight(1f))
-            Button(
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally),
-                onClick = { /*TODO*/ }) {
-                Text("Start Match")
-            }
+            CustomButton(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                textModifier = Modifier.padding(horizontal = 50.dp),
+                onClick = onStartMatch,
+                text = "START NEW GAME"
+            )
             Spacer(Modifier.weight(1f))
         }
     }
 }
 
-@Preview(showBackground = true, widthDp = 600, heightDp = 1280)
+@Preview(showBackground = true, widthDp = 1080, heightDp = 2340)
 @Composable
 fun DefaultPreview1() {
-    val players: State<Map<String,String>> = remember {
+    val players: State<Map<String, String>> = remember {
         mutableStateOf(mapOf("Mario" to "team1", "Paola" to "team2"))
     }
-    GameSkeletonTheme ("Red"){
+    GameSkeletonTheme() {
+        SetupMatchScreen("abc", players, {})
+    }
+}
+
+@Preview(showBackground = true, widthDp = 1280, heightDp = 800)
+@Composable
+fun DefaultPreview2() {
+    val players: State<Map<String, String>> = remember {
+        mutableStateOf(mapOf("Mario" to "team1", "Paola" to "team2"))
+    }
+    GameSkeletonTheme() {
         SetupMatchScreen("abc", players, {})
     }
 }

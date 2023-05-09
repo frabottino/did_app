@@ -113,7 +113,7 @@ fun InitialScreen(
     }
 }
 
-@Preview(showBackground = true, heightDp = 800, widthDp = 1280)
+@Preview(showBackground = true, heightDp = 1280, widthDp = 800)
 @Composable
 fun PreviewInitialScreen() {
     GameSkeletonTheme {
