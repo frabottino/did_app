@@ -1,14 +1,29 @@
 package it.polito.did.gameskeleton
 
+import android.os.CountDownTimer
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import it.polito.did.gameskeleton.screens.viewModel
 
 class EmojiViewModel : ViewModel() {
     private val emojis: MutableLiveData<MutableList<EmojiModel>> by lazy {
         MutableLiveData<MutableList<EmojiModel>>()
+    }
+
+    var isFinished = false
+    var pts = 30
+
+
+
+    var timer = object: CountDownTimer(30000, 1000) {
+        override fun onTick(millisUntilFinished: Long) {
+            pts = (millisUntilFinished/1000).toInt()
+        }
+        override fun onFinish() {
+            if(!isFinished) {
+                GameViewModel.getInstance().sendMiniPts(0)
+            }
+        }
     }
 
     fun getEmojis(): LiveData<MutableList<EmojiModel>> {
@@ -17,36 +32,30 @@ class EmojiViewModel : ViewModel() {
 
     fun loadEmojis() {
         emojis.value = mutableListOf(
-            /*
-            EmojiModel("😍"),
-            EmojiModel(" 🥰"),
-            EmojiModel("😘"),
-            EmojiModel("😭"),
-            EmojiModel("😢"),
-            EmojiModel("😂"),
-            EmojiModel("😍"),
-            EmojiModel(" 🥰"),
-            EmojiModel("😘"),
-            EmojiModel("😭"),
-            EmojiModel("😢"),
-            EmojiModel("😂"),
+            EmojiModel("\uD83C\uDF33"), //albero
+            EmojiModel("\uD83C\uDF33"), //albero
+           /* EmojiModel("\uD83C\uDF3C"), //fiore
+            EmojiModel("\uD83C\uDF3C"), //fiore
+            EmojiModel("\uD83C\uDF0D"), //pianeta
+            EmojiModel("\uD83C\uDF0D"), //pianeta
+            EmojiModel("\uD83D\uDCA7"), //acqua
+            EmojiModel("\uD83D\uDCA7"), //acqua
+            EmojiModel("☀"), //sole
+            EmojiModel("☀"), //sole
+            EmojiModel("⚡"), //fulmine
+            EmojiModel("⚡"), //fulmine
+
             */
-            EmojiModel("\uD83C\uDF33"), //albero
-            EmojiModel("\uD83C\uDF33"), //albero
-            EmojiModel("\uD83C\uDF3C"), //fiore
-            EmojiModel("\uD83C\uDF3C"), //fiore
-            EmojiModel("\uD83C\uDF0D"), //pianeta
-            EmojiModel("\uD83C\uDF0D"), //pianeta
-            EmojiModel("\uD83D\uDCA7"), //acqua
-            EmojiModel("\uD83D\uDCA7"), //acqua
-            EmojiModel("☀"), //sole
-            EmojiModel("☀"), //sole
-            EmojiModel("⚡"), //fulmine
-            EmojiModel("⚡"), //fulmine
         ).apply { shuffle() }
+        timer.start()
     }
 
-    fun updateShowVisibleCard(id: String, msn : MutableLiveData<ScreenName>) {
+    fun updateShowVisibleCard(
+        id: String,
+        msn: MutableLiveData<ScreenName>,
+        vm: GameViewModel
+    ) {
+
         val selects: List<EmojiModel>? = emojis.value?.filter { it -> it.isSelect }
         val selectCount: Int = selects?.size ?: 0
         var charFind: String = "";
@@ -75,12 +84,10 @@ class EmojiViewModel : ViewModel() {
 
         val visibleCount: Int = list?.filter { it -> it.isVisible }?.size ?: 0
         if (visibleCount <= 0) {
-            //loadEmojis()
-            //msn.value = ScreenName.Home("14")
-            msn.value = ScreenName.Cards("14") //TODO mettere a posto il parametro string da passare
-            //var vm = GameViewModel() //TODO singleton
-            val vm = GameViewModel.getInstance()
+            timer.cancel()
+            isFinished = true
             vm.nextTurn()
+            vm.sendMiniPts(pts)
             return
         }
 

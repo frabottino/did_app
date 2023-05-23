@@ -416,17 +416,34 @@ object ConstantCards {
 
     fun displayCards() : ArrayList<Card>{
         var displayedCards = ArrayList<Card>()
-        for(i in 0..4)
+        for(i in 0..4) {
+            println("displaycard $i e basta")
+            println("displaycard $i ${cardsList[i]}")
             displayedCards[i] = cardsList[i]
+        }
         return displayedCards
     }
 
-    fun pickCard(c : Int) {
-        cardsList.removeAt(c)
+    fun pickCard(a : Int?, s : String) {
+        println("before ${cardsList[0].idC}, ${cardsList[1].idC}, ${cardsList[2].idC}, ${cardsList[3].idC}, ${cardsList[4].idC} $s")
+        if(a != null) cardsList.removeAt(a-1)
+        println("after ${cardsList[0].idC}, ${cardsList[1].idC}, ${cardsList[2].idC}, ${cardsList[3].idC}, ${cardsList[4].idC} $s")
         //TODO da mettere chiamata ad assigncard passando riferimento di carta e squadra
+    }
+
+    fun getCurrentList() : ArrayList<Card>{
+        return cardsList
     }
 
     fun assignCard() {
         //TODO eventualmente da ausilio per associare team e carta
+    }
+
+    fun getCardByID(id : Int) : Card?{
+        for (i in 0..30) {
+            if (id == cardsList[i].idC)
+                return cardsList[i]
+        }
+        return null
     }
 }

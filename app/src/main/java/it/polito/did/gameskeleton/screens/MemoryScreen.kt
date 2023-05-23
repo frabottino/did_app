@@ -1,5 +1,6 @@
 package it.polito.did.gameskeleton.screens
 
+import android.os.CountDownTimer
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -36,7 +37,7 @@ fun MainContent(onStartMemory: () -> Unit,
         topBar = {
             TopAppBar(
                 title = {
-                    Text("ciaomamma")// TODO: Text(text = stringResource(id = R.string.app_name))
+                    Text("ciaomamma")// TODO Text(text = stringResource(id = R.string.app_name))
                 },
                 actions = {
                     IconButton(onClick = { viewModel.loadEmojis()}) {
@@ -83,8 +84,10 @@ private fun CardItem(emoji: EmojiModel, vm : GameViewModel ) {
                 )
                 .clickable {
                     if (emoji.isVisible) {
-                        viewModel.updateShowVisibleCard(emoji.id,
-                            vm.screenName as MutableLiveData<ScreenName>
+                        viewModel.updateShowVisibleCard(
+                            emoji.id,
+                            vm.screenName as MutableLiveData<ScreenName>,
+                            vm
                         )
                     }
                 }

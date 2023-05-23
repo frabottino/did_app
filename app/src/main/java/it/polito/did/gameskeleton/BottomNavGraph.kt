@@ -1,14 +1,18 @@
 package it.polito.did.gameskeleton
 
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import it.polito.did.gameskeleton.screens.*
 
 @Composable
-fun BottomNavGraph(team: String, onMascotte: () -> Unit, navController: NavHostController){
+fun BottomNavGraph(
+    team: String,
+    onMascotte: () -> Unit,
+    cards: ArrayList<Int>,
+    navController: NavHostController
+){
     NavHost(
         navController = navController,
         startDestination = BottomBarScreen.Home.route
@@ -17,7 +21,7 @@ fun BottomNavGraph(team: String, onMascotte: () -> Unit, navController: NavHostC
             HomeScreen(team, onMascotte)
         }
         composable(route = BottomBarScreen.Managing.route){
-            ManagingScreen(team)
+            ManagingScreen(team, cards)
         }
         composable(route = BottomBarScreen.Timeline.route){
             TimelineScreen(team)

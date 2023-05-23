@@ -28,7 +28,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 
 @Composable
-fun BottomNav(team: String, onMascotte: () -> Unit, modifier: Modifier = Modifier) {
+fun BottomNav(
+    team: String,
+    onMascotte: () -> Unit,
+    cards: ArrayList<Int>,
+    modifier: Modifier = Modifier
+) {
     val navController = rememberNavController()
     println(team)
     Scaffold(
@@ -38,6 +43,7 @@ fun BottomNav(team: String, onMascotte: () -> Unit, modifier: Modifier = Modifie
         BottomNavGraph(
             team,
             onMascotte,
+            cards,
             navController = navController
         )
     }
@@ -134,5 +140,5 @@ fun ChangeInColor(color: String) : Color{
 @Composable
 @Preview
 fun BottomNavPreview() {
-    BottomNav("Teams", {})
+    //BottomNav("Teams", {},)
 }

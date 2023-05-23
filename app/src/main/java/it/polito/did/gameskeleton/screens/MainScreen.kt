@@ -4,9 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import it.polito.did.gameskeleton.BottomNav
-import it.polito.did.gameskeleton.Card
 import it.polito.did.gameskeleton.GameViewModel
 //import it.polito.did.gameskeleton.MainBottomScreen
 import it.polito.did.gameskeleton.ScreenName
@@ -32,7 +30,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
             vm::onStartMemory,
             vm,
             modifier)
-        is ScreenName.Home -> BottomNav(screenName.team, vm::onGoMascotte, modifier)
+        is ScreenName.Home -> BottomNav(screenName.team, vm::onGoMascotte, vm.getMyCards(), modifier)
         is ScreenName.Mascotte -> MascotteScreen(
             screenName.team,
             vm::onStartMemory,
@@ -41,13 +39,35 @@ fun MainScreen(modifier: Modifier = Modifier) {
             modifier)
         is ScreenName.Cards -> CardsScreen(
             screenName.team,
-            vm::onGoHome)
+            vm::pickCards,
+            vm.getFiveCards()
+        )
+        is ScreenName.Cards2 -> Cards2Screen(
+            screenName.team,
+            vm::pickCards,
+            vm.getFiveCards(),
+            screenName.one,
+            screenName.two,
+            screenName.i
+        )
+        is ScreenName.Cards3 -> Cards3Screen(
+            screenName.team,
+            vm::pickCards,
+            vm.getFiveCards(),
+            screenName.one,
+            screenName.two,
+            screenName.i,
+            screenName.check,
+            screenName.x
+        )
+        is ScreenName.Menu -> GameMenuScreen(screenName.team)
         is ScreenName.Flappy -> FlappyBird()
         is ScreenName.Quiz -> QuizScreen()
         is ScreenName.WaitingStart -> WaitScreen(modifier)
         is ScreenName.Dashboard -> DashboardScreen(modifier)
         is ScreenName.Playing -> PlayerScreen(screenName.team,  modifier)
         is ScreenName.Error -> ErrorScreen(screenName.message, modifier)
+        is ScreenName.Generic -> GenericScreen(title = "Play")
         null -> Box(modifier)
     }
 }

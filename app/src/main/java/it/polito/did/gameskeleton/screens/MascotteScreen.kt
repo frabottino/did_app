@@ -35,10 +35,11 @@ fun MascotteScreen(team: String, onStartMemory: () -> Unit, onStartFlappy: () ->
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier.height(32.dp))
-            when (vm.getTurnFromGM()) {
+           /* when (vm.getTurnFromGM()) {
                 1 -> {
                     Button(
                         modifier = modifier.align(Alignment.Center),
+                        //enabled = vm.getPlayerTurn()&&vm.getTeamTurn(),
                         onClick = { onStartMemory() }) {
                         Text("GO TO MEMORY")
                     }
@@ -46,6 +47,7 @@ fun MascotteScreen(team: String, onStartMemory: () -> Unit, onStartFlappy: () ->
                 2 -> {
                     Button(
                         modifier = modifier.align(Alignment.Center),
+                        //enabled = vm.getPlayerTurn()&&vm.getTeamTurn(),
                         onClick = { onStartFlappy() }) {
                         Text("GO TO FLAPPY")
                     }
@@ -53,10 +55,17 @@ fun MascotteScreen(team: String, onStartMemory: () -> Unit, onStartFlappy: () ->
                 3 -> {
                     Button(
                         modifier = modifier.align(Alignment.Center),
+                        //enabled = vm.getPlayerTurn()&&vm.getTeamTurn(),
                         onClick = { onStartQuiz() }) {
                         Text("GO TO QUIZ")
                     }
                 }
+            }*/
+            Button(
+                modifier = modifier.align(Alignment.Center),
+                //enabled = vm.getPlayerTurn()&&vm.getTeamTurn(),
+                onClick = { onStartMemory() }) {
+                Text("GO TO QUIZ")
             }
         }
     }

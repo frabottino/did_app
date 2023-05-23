@@ -27,11 +27,19 @@ class Player {
         playerTeam = team
     }
 
-    fun isYourTurn(id : Int){
+    fun setYourTurn(id : Int){
         isMyPersonalTurn = playerId==id
     }
 
-    fun isYourTeamTurn(id : Int){
+    fun setYourTeamTurn(id : Int){
         isMyTeamTurn = playerTeam == id
+    }
+
+    fun isYourTurn() : Boolean{
+        return isMyPersonalTurn
+    }
+
+    fun isYourTeamTurn() : Boolean{
+        return isMyTeamTurn
     }
 }

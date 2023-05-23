@@ -1,5 +1,6 @@
 package it.polito.did.gameskeleton.flappyminigame
 
+import android.os.CountDownTimer
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,6 +20,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.did_app.R
+import it.polito.did.gameskeleton.GameViewModel
+import it.polito.did.gameskeleton.ScreenName
 
 class Game {
     var bird = mutableStateOf(Bird(15f))
@@ -65,16 +68,31 @@ class Game {
         if(score >= highScore) highScore = score
         return highScore
     }
+
+    fun getHigh() : Int{
+        return highScore
+    }
 }
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun FlappyBird() {
+    val vm = GameViewModel.getInstance()
     val game = remember { Game() }
     var switchsFlagWindow by remember { mutableStateOf(1) }
     var upOrDown by remember { mutableStateOf(true) }
     var st by remember { mutableStateOf(System.currentTimeMillis()) }
     var end: Long
+
+    val timer = object: CountDownTimer(30000, 1000) {
+        override fun onTick(millisUntilFinished: Long) {
+            game.setHigh(game.passCount)
+        }
+        override fun onFinish() {
+            vm.sendMiniPts(game.highScore)
+        }
+    }
+    timer.start()
 
     Box(modifier = Modifier
         .fillMaxSize()
