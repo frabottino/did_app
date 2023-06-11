@@ -1,10 +1,9 @@
 package it.polito.did.gameskeleton.screens
 
+import android.content.DialogInterface
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -29,7 +28,7 @@ fun CardsScreen(team: String, sendCards: KFunction6<Int, Int, Int?, Int?, Int?, 
     val color3 = if (first == 3 || second == 3) Color.Red else Color.Blue
     val color4 = if (first == 4 || second == 4) Color.Red else Color.Blue
     val color5 = if (first == 5 || second == 5) Color.Red else Color.Blue
-
+    val openDialog = remember { mutableStateOf(false)  }
 
     GameSkeletonTheme(team = team) {
         Box(
@@ -103,15 +102,50 @@ fun CardsScreen(team: String, sendCards: KFunction6<Int, Int, Int?, Int?, Int?, 
             Spacer(Modifier.height(32.dp))
             Button(
                 modifier = Modifier.align(Alignment.BottomCenter),
-                onClick = {println("first second $first $second")
-                    if(cards[first-1] in 82..85  || cards[first-1] == 88)
-                        vm.onGoCards2(first, second, cards[first-1])
-                    else if(cards[second-1] in 82..85 || cards[second-1] == 88)
-                        vm.onGoCards2(second, first, cards[second-1])
-                    else
-                        sendCards(first, second, null, null, null, null)}) {
+                onClick = {
+                    try {
+                        println("first second $first $second")
+                        if(cards[first-1] in 82..85  || cards[first-1] == 88)
+                            vm.onGoCards2(first, second, cards[first-1])
+                        else if(cards[second-1] in 82..85 || cards[second-1] == 88)
+                            vm.onGoCards2(second, first, cards[second-1])
+                        else
+                            sendCards(first, second, null, null, null, null)
+                    } catch (e: Exception) {
+                        openDialog.value = true
+                    }
+                }) {
                 Text("Confirm")
             }
+        }
+        if (openDialog.value) {
+
+            AlertDialog(
+                onDismissRequest = {
+                    // Dismiss the dialog when the user clicks outside the dialog or on the back
+                    // button. If you want to disable that functionality, simply use an empty
+                    // onCloseRequest.
+                    openDialog.value = false
+                },
+                title = {
+                    Text(text = "Error")
+                },
+                text = {
+                    Text("An error occurred...")
+                },
+                confirmButton = {
+                },
+                dismissButton = {
+                    Button(
+
+                        onClick = {
+                            openDialog.value = false
+                        }) {
+                        Text("OK")
+                    }
+                },
+                modifier = Modifier.border(width = 2.dp, color = MaterialTheme.colors.primary)
+            )
         }
     }
 }
