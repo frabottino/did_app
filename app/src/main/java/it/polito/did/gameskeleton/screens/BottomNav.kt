@@ -30,8 +30,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 @Composable
 fun BottomNav(
     team: String,
-    onMascotte: () -> Unit,
     cards: ArrayList<Int>,
+    onMemory: () -> Unit,
+    onFlappy: () -> Unit,
+    onQuiz: () -> Unit,
+    deck: ArrayList<Int>,
     modifier: Modifier = Modifier
 ) {
     val navController = rememberNavController()
@@ -42,8 +45,11 @@ fun BottomNav(
         Modifier.padding(it)
         BottomNavGraph(
             team,
-            onMascotte,
             cards,
+            onMemory,
+            onFlappy,
+            onQuiz,
+            deck,
             navController = navController
         )
     }
@@ -54,7 +60,7 @@ fun BottomBar(team : String, navController: NavHostController) {
     val screens = listOf(
         BottomBarScreen.Home,
         BottomBarScreen.Managing,
-        BottomBarScreen.Timeline,
+        BottomBarScreen.Mascotte,
     )
 
     val navStackBackEntry by navController.currentBackStackEntryAsState()

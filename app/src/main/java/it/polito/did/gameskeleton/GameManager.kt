@@ -4,10 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
@@ -23,7 +20,6 @@ class GameManager(private val scope:CoroutineScope) {
     private val firebase = Firebase.database(URL)
     private val firebaseAuth = Firebase.auth
     private var playerName = String()
-    private var currentTeam = Team()
     private var currentPlayer = Player()
     private var player = Player()
     private var gameID : Int = 0
@@ -31,16 +27,20 @@ class GameManager(private val scope:CoroutineScope) {
     private var gMiniPts : Int = 0
     private var rMiniPts : Int = 0
     private var bMiniPts : Int = 0
+    private var yMiniTemp : Int = 0
+    private var gMiniTemp : Int = 0
+    private var rMiniTemp : Int = 0
+    private var bMiniTemp : Int = 0
     private var rCards = ArrayList<Int>()
     private var bCards = ArrayList<Int>()
     private var gCards = ArrayList<Int>()
     private var yCards = ArrayList<Int>()
-    private var rDeck = ArrayList<Int>(7)
-    private var bDeck = ArrayList<Int>(7)
-    private var gDeck = ArrayList<Int>(7)
-    private var yDeck = ArrayList<Int>(7)
-    private var myDeck = ArrayList<Int>(7)
     private var myCards = ArrayList<Int>()
+    private var rDeck = arrayListOf(0,0,0,0,0,0,0,0,0)
+    private var bDeck = arrayListOf(0,0,0,0,0,0,0,0,0)
+    private var gDeck = arrayListOf(0,0,0,0,0,0,0,0,0)
+    private var yDeck = arrayListOf(0,0,0,0,0,0,0,0,0)
+    private var myDeck = arrayListOf(0,0,0,0,0,0,0,0,0)
     private var rVictory : Int = 0
     private var bVictory : Int = 0
     private var gVictory : Int = 0
@@ -49,6 +49,7 @@ class GameManager(private val scope:CoroutineScope) {
     private val teamNames = mutableListOf("Red", "Blue", "Green", "Yellow")
     private var sizes = ArrayList<Int>()
     private var turn : Int = 0
+    private var capTeam : Int = 0
     private var phase : Int = 0
     private var capId : Int = 0
     private var card1 : Int = -1
@@ -56,8 +57,10 @@ class GameManager(private val scope:CoroutineScope) {
     private var card3 : Int = -1
     private var card4 : Int = -1
     private var card5 : Int = -1
-    private var ranking = mutableListOf(rVictory, bVictory, gVictory, yVictory)
+    private var cards = ArrayList<Card>()
     private var discarded : Boolean = false
+    private var temporaryCap : String = ""
+    private var special = 101
 
 
     init {
@@ -84,7 +87,6 @@ class GameManager(private val scope:CoroutineScope) {
 
     private val mutablePlayers = MutableLiveData<Map<String, String>>().also {
         it.value = emptyMap()
-        val teams : Teams
     }
     val players: LiveData<Map<String, String>> = mutablePlayers
 
@@ -94,7 +96,6 @@ class GameManager(private val scope:CoroutineScope) {
 
     private fun assignTeam(players: Map<String,String>): Map<String,String>? {
         val teams = players.keys.groupBy { players[it].toString() } //raggruppa i giocatori per squadra
-        //println("id ${players.keys.size}")
         sizes = teamNames.map{ teams[it]?.size ?: 0 } as ArrayList<Int> //guarda il numero di componenti per ogni squadra
         val pickAGuy = teamNames.map{ teams[it]?.get(0)?: "" } //piglia il quartetto di giocatori che sono nell'indice x della squadra
         val min: Int = sizes.stream().min(Integer::compare).get() //guarda il valore più basso di componenti in una squadra
@@ -107,11 +108,15 @@ class GameManager(private val scope:CoroutineScope) {
         //println("players $updatedPlayers")
         //println("the guy is $pickAGuy")
         //println("the captain is ${players.keys}")
-        player.setPlayerId(min)
-        if(index!=0) player.setPlayerTeam(index-1)
-        else player.setPlayerTeam(3)
-        //println("player id ${player.getPlayerId()}, team ${player.getPlayerTeam()}")
-        if(player.getPlayerId() != -1) getDatabase(teamNames[index])
+        if(index!=0) {
+            player.setPlayerId(min)
+            player.setPlayerTeam(index - 1)
+        }
+        else {
+            player.setPlayerId(min-1)
+            player.setPlayerTeam(3)
+        }
+
         teams[""]?.forEach {
             updatedPlayers[it] = teamNames[index] //lista giocatori aggiornata
             index = (index +1) % teamNames.size //aggiorna indice di squadra meno popolata
@@ -120,7 +125,7 @@ class GameManager(private val scope:CoroutineScope) {
         return if (changed) updatedPlayers else null
     }
 
-    private fun watchPlayers() {
+    private fun watchPlayers(go : Boolean) {
         val id = matchId.value ?: throw RuntimeException("Missing match Id")
         val ref = firebase.getReference(id)
         ref.child("players").addValueEventListener(object: ValueEventListener {
@@ -131,7 +136,10 @@ class GameManager(private val scope:CoroutineScope) {
                     if (updatedPlayers != null) {
                         ref.child("players").setValue(updatedPlayers)
                     } else {
-                        mutablePlayers.value = v
+                        mutablePlayers.value = v}
+                    if(player.getPlayerId()!= -1 && go && getMyTeam()!=""){
+                        getDatabase(getMyTeam())
+                        ConstantCards.getAllCards()
                     }
                 }
             }
@@ -140,22 +148,24 @@ class GameManager(private val scope:CoroutineScope) {
                 mutableScreenName.value = ScreenName.Error(error.message)
             }
         })
+    }
 
+    fun getTeamPlayers(team: Int): Collection<List<String>> {
+        return mutablePlayers.value!!.keys.groupBy {  mutablePlayers.value!![it].toString() }.filter { (key) -> key == teamNames[team] }.values
+    }
+
+    fun setTemporaryCap(cap : String){
+        println("CAPITANOOOO $cap")
+        firebase.getReference(gameID.toString()).child("TemporaryCap").setValue(cap)
     }
 
     private fun getMyTeam(): String {
         Log.d("GameManager", "players: ${players.value}")
         Log.d("GameManager", "uid: ${firebaseAuth.uid}")
-        //println("ciao ${players.value?.toString()}")
-        //println("${firebaseAuth.uid}")
-        //println(playerName)
         return players.value?.get(playerName) ?: ""
-        //return players.value?.get(firebaseAuth.uid) ?: ""
     }
 
     private fun getMyName(): String {
-        Log.d("GameManager", "players: ${players.value}")
-        Log.d("GameManager", "uid: ${firebaseAuth.uid}")
         return players.value?.get(firebaseAuth.toString()) ?: ""
     }
 
@@ -165,7 +175,6 @@ class GameManager(private val scope:CoroutineScope) {
                 val random = Random().nextInt( 89999) + 10000
                 val ref = firebase.getReference(random.toString())
                 gameID = random
-                //val ref = firebase.reference.push()
                 Log.d("GameManager","Creating match ${ref.key}")
                 ref.setValue(
                     mapOf(
@@ -178,7 +187,7 @@ class GameManager(private val scope:CoroutineScope) {
                 Log.d("GameManager", "Match creation succeeded")
                 mutableMatchId.value = ref.key
                 mutableScreenName.value = ScreenName.SetupMatch(ref.key!!)
-                watchPlayers()
+                watchPlayers(false)
             } catch (e:Exception) {
                 mutableScreenName.value = ScreenName.Error(e.message ?: "Generic error")
             }
@@ -193,21 +202,63 @@ class GameManager(private val scope:CoroutineScope) {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     mutableScreenName.value = getScreenName(snapshot.value?.toString()?: "")
                 }
-
                 override fun onCancelled(error: DatabaseError) {
                     mutableScreenName.value = ScreenName.Error(error.message)
                 }
             }
         )
-
     }
 
     private fun getScreenName(name:String): ScreenName {
-        return when (name) {
-            "WaitingStart" -> ScreenName.WaitingStart
-            "Playing" -> ScreenName.Home(getMyTeam()) //qui è dove si indica il primo screen del player
-            //"Playing" -> ScreenName.Menu(getMyTeam()) //qui è dove si indica il primo screen del player
-            else -> ScreenName.Error("Unknown screen $name")
+        println("player name is $playerName")
+        return if(playerName == "PCAdmin"){ //GESTORE PARTITA
+            when (name) {
+                "WaitingStart" -> ScreenName.WaitingStart
+                "Playing" -> ScreenName.Menu
+                "Ranking" -> ScreenName.MiniRank
+                "Memory" -> ScreenName.Menu
+                "Flappy" -> ScreenName.Menu
+                "Quiz" -> ScreenName.Menu
+                "Cards" -> ScreenName.Menu
+                "Ending" -> ScreenName.Victory
+                else -> ScreenName.Error("Unknown screen $name")
+            }
+        } else if ((player.isYourTurn(capId, sizes, getMyTeam()) && player.isYourTeamTurn(capTeam, getMyTeam(), teamNames)) || playerName == temporaryCap){ //CAPITANO
+            when (name) {
+                "WaitingStart" -> ScreenName.WaitingStart
+                "Playing" -> ScreenName.Home(getMyTeam())
+                "Ranking" -> ScreenName.PlayerRank
+                "Memory" -> ScreenName.Memory
+                "Flappy" -> ScreenName.Flappy
+                "Quiz" -> ScreenName.Quiz
+                "Cards" -> ScreenName.Cards(getMyTeam())
+                "Ending" -> ScreenName.PlayerVictory
+                else -> ScreenName.Error("Unknown screen $name")
+            }
+        } else if (player.isYourTeamTurn(capTeam, getMyTeam(), teamNames)){ //SQUADRA
+            when (name) {
+                "WaitingStart" -> ScreenName.WaitingStart
+                "Playing" -> ScreenName.Home(getMyTeam())
+                "Ranking" -> ScreenName.PlayerRank
+                "Memory" -> ScreenName.Memory
+                "Flappy" -> ScreenName.Flappy
+                "Quiz" -> ScreenName.Quiz
+                "Cards" -> ScreenName.WaitingCards(getMyTeam())
+                "Ending" -> ScreenName.PlayerVictory
+                else -> ScreenName.Error("Unknown screen $name")
+            }
+        } else{ //NON INTERESSATI
+            when (name) {
+                "WaitingStart" -> ScreenName.WaitingStart
+                "Playing" -> ScreenName.Home(getMyTeam())
+                "Ranking" -> ScreenName.PlayerRank
+                "Memory" -> ScreenName.Home(getMyTeam())
+                "Flappy" -> ScreenName.Home(getMyTeam())
+                "Quiz" -> ScreenName.Home(getMyTeam())
+                "Cards" -> ScreenName.Home(getMyTeam())
+                "Ending" -> ScreenName.PlayerVictory //TODO pensare a schermate alternative per il player
+                else -> ScreenName.Error("Unknown screen $name")
+            }
         }
     }
 
@@ -223,9 +274,9 @@ class GameManager(private val scope:CoroutineScope) {
                     gameID = matchId.toInt()
                     ref
                         .child("players")
-                        .child(playerName)//firebaseAuth.uid!!)
+                        .child(playerName)
                         .setValue("").await()
-                    watchPlayers()
+                    watchPlayers(true)
                     watchScreen()
                 } else {
                     mutableScreenName.value = ScreenName.Error("Invalid gameId")
@@ -237,57 +288,55 @@ class GameManager(private val scope:CoroutineScope) {
     }
 
     fun startGame() {
-        scope.launch{
-            try {
-                val ref = firebase.getReference(matchId.value ?: throw RuntimeException("Invalid State"))
-                ref.child("screen").setValue("Playing").await()
-                mutableScreenName.value = ScreenName.Generic
-                player
-                Log.d("GameManager", "Game started")
-            } catch (e: Exception) {
-                mutableScreenName.value = ScreenName.Error(e.message ?: "Generic error")
+        //if(mutablePlayers.value?.size!! in 36..4) {
+            scope.launch {
+                try {
+                    val ref = firebase.getReference(
+                        matchId.value ?: throw RuntimeException("Invalid State")
+                    )
+                    ref.child("screen").setValue("Playing").await()
+                    playerName = "PCAdmin"
+                    watchScreen()
+                    Log.d("GameManager", "Game started")
+                } catch (e: Exception) {
+                    mutableScreenName.value = ScreenName.Error(e.message ?: "Generic error")
+                }
             }
-        }
-        player.setPlayerId(-1)
+       // }else mutableScreenName.value = ScreenName.Error("Invalid Number of players") //TODO per tutte queste schermate di errore magari dare possiblità di tornare indietro e rifare
     }
 
     fun goToHome(){
-        mutableScreenName.value = ScreenName.Home(getMyTeam())
-        //TODO try catch da mettere a posto
-    }
-
-    fun goToMascotte(){
-        mutableScreenName.value = ScreenName.Mascotte(getMyTeam())
-        //TODO try catch da mettere a posto
+        scope.launch{
+            try{
+                firebase.getReference(gameID.toString()).child("screen").setValue("Playing").await()
+            } catch (e: Exception) {
+                mutableScreenName.value = ScreenName.Error(e.message ?: "Error in going to Home")
+            }
+        }
     }
 
     fun getDatabase(myTeam: String) {
         val ref = firebase.getReference(gameID.toString())
-        println("get database playerid ${player.getPlayerId()}, ${gameID.toString()}, ${myTeam}")
-        var phaseRef = ref.child("Phase").addValueEventListener(object: ValueEventListener {
+        println("get database playerid ${player.getPlayerId()}, $gameID, $myTeam")
+        ref.child("Phase").addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                //println("onDataChange with ${snapshot.value}")
-                if(snapshot.value.toString() != "0"){
-                    endPhase()
-                }
+                phase = Integer.valueOf(snapshot.value.toString())
             }
             override fun onCancelled(error: DatabaseError) {
                 mutableScreenName.value = ScreenName.Error(error.message)
             }
         })
 
-        var turnRef = ref.child("Turn").addValueEventListener(object: ValueEventListener {
+        ref.child("Turn").addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 turn = Integer.valueOf(snapshot.value.toString())
-                if((turn - 1)==player.getPlayerTeam())
-                    goToMascotte()
             }
             override fun onCancelled(error: DatabaseError) {
                 mutableScreenName.value = ScreenName.Error(error.message)
             }
         })
 
-        var capIdRef = ref.child("CaptainID").addValueEventListener(object: ValueEventListener {
+        ref.child("CaptainID").addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 capId = Integer.valueOf(snapshot.value.toString())
                 currentPlayer.setPlayerId(capId)
@@ -297,19 +346,19 @@ class GameManager(private val scope:CoroutineScope) {
             }
         })
 
-        var capTeamRef = ref.child("CaptainTeam").addValueEventListener(object: ValueEventListener {
+        ref.child("CaptainTeam").addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 println("hello with ${snapshot.value}")
-                currentPlayer.setPlayerTeam(Integer.valueOf(snapshot.value.toString()))
+                capTeam = Integer.valueOf(snapshot.value.toString())
+                currentPlayer.setPlayerTeam(capTeam)
             }
             override fun onCancelled(error: DatabaseError) {
                 mutableScreenName.value = ScreenName.Error(error.message)
             }
         })
 
-        var cardsRef1 = ref.child("5Cards").child("1").addValueEventListener(object: ValueEventListener {
+        ref.child("5Cards").child("1").addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                //println("card1 changed ${snapshot.value}")
                 card1 = Integer.valueOf(snapshot.value.toString())
             }
             override fun onCancelled(error: DatabaseError) {
@@ -317,9 +366,8 @@ class GameManager(private val scope:CoroutineScope) {
             }
         })
 
-         var cardsRef2 = ref.child("5Cards").child("2").addValueEventListener(object: ValueEventListener {
+         ref.child("5Cards").child("2").addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                //println("card2 changed ${snapshot.value}")
                 card2 = Integer.valueOf(snapshot.value.toString())
             }
             override fun onCancelled(error: DatabaseError) {
@@ -327,9 +375,8 @@ class GameManager(private val scope:CoroutineScope) {
             }
         })
 
-        var cardsRef3 = ref.child("5Cards").child("3").addValueEventListener(object: ValueEventListener {
+        ref.child("5Cards").child("3").addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                //println("card3 changed ${snapshot.value}")
                 card3 = Integer.valueOf(snapshot.value.toString())
             }
             override fun onCancelled(error: DatabaseError) {
@@ -337,9 +384,8 @@ class GameManager(private val scope:CoroutineScope) {
             }
         })
 
-        var cardsRef4 = ref.child("5Cards").child("4").addValueEventListener(object: ValueEventListener {
+        ref.child("5Cards").child("4").addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-               // println("card4 changed ${snapshot.value}")
                 card4 = Integer.valueOf(snapshot.value.toString())
             }
             override fun onCancelled(error: DatabaseError) {
@@ -347,9 +393,8 @@ class GameManager(private val scope:CoroutineScope) {
             }
         })
 
-        var cardsRef5 = ref.child("5Cards").child("5").addValueEventListener(object: ValueEventListener {
+        ref.child("5Cards").child("5").addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-               // println("card5 changed ${snapshot.value}")
                 card5 = Integer.valueOf(snapshot.value.toString())
             }
             override fun onCancelled(error: DatabaseError) {
@@ -357,11 +402,10 @@ class GameManager(private val scope:CoroutineScope) {
             }
         })
 
-        var myTeamCards = ref.child(myTeam).child("Cards").addValueEventListener(object: ValueEventListener {
+        ref.child(myTeam).child("Cards").addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-               // println("my team cards changed ${snapshot.value}, I'm $myTeam")
-                if (snapshot.value.toString() != "0") {
-                    var arr = snapshot.value.toString().drop(1).split(" ").toTypedArray()
+                if (snapshot.value.toString() != "0" && snapshot.value != null) {
+                    val arr = snapshot.value.toString().drop(1).split(" ").toTypedArray()
                     for (i in arr.indices) {
                         arr[i] = arr[i].takeWhile { it.isDigit() }
                         println("arri my ${arr[i]}")
@@ -377,19 +421,64 @@ class GameManager(private val scope:CoroutineScope) {
             }
         })
 
-        var myTeamVictory = ref.child(myTeam).child("VictoryPoints").addValueEventListener(object: ValueEventListener {
+        ref.child(myTeam).child("VictoryPoints").addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 println("my team victory changed ${snapshot.value}, I'm $myTeam")
                 myVictory = Integer.valueOf(snapshot.value.toString())
-                    }
+            }
             override fun onCancelled(error: DatabaseError) {
                 mutableScreenName.value = ScreenName.Error(error.message)
             }
         })
 
+        ref.child("Order").child("0").addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                teamNames[0] = snapshot.value.toString()
+            }
+            override fun onCancelled(error: DatabaseError) {
+                mutableScreenName.value = ScreenName.Error(error.message)
+            }
+        })
+
+        ref.child("Order").child("1").addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                teamNames[1] = snapshot.value.toString()
+            }
+            override fun onCancelled(error: DatabaseError) {
+                mutableScreenName.value = ScreenName.Error(error.message)
+            }
+        })
+
+        ref.child("Order").child("2").addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                teamNames[2] = snapshot.value.toString()
+            }
+            override fun onCancelled(error: DatabaseError) {
+                mutableScreenName.value = ScreenName.Error(error.message)
+            }
+        })
+
+        ref.child("Order").child("3").addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                teamNames[3] = snapshot.value.toString()
+            }
+            override fun onCancelled(error: DatabaseError) {
+                mutableScreenName.value = ScreenName.Error(error.message)
+            }
+        })
+
+        ref.child("TemporaryCap").addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.value!=null)
+                    temporaryCap = snapshot.value.toString()
+            }
+            override fun onCancelled(error: DatabaseError) {
+                mutableScreenName.value = ScreenName.Error(error.message)
+            }
+        })
     }
 
-    fun setDatabase(ref : DatabaseReference){
+    private fun setDatabase(ref : DatabaseReference) {
         val red = ref.child("Red")
         val blue = ref.child("Blue")
         val yellow = ref.child("Yellow")
@@ -398,54 +487,31 @@ class GameManager(private val scope:CoroutineScope) {
         val capTeamRef = ref.child("CaptainTeam")
         val capIdRef = ref.child("CaptainID")
         val phaseRef = ref.child("Phase")
-        val gMiniPoints = green.child("MiniPoints")
-        val rMiniPoints = red.child("MiniPoints")
-        val bMiniPoints = blue.child("MiniPoints")
-        val yMiniPoints = yellow.child("MiniPoints")
 
-        phaseRef.setValue(0)
-        turnRef.setValue(1)
-        capIdRef.setValue(0)
-        capTeamRef.setValue(0)
+        scope.launch {
+            try {
+                phaseRef.setValue(0)
+                turnRef.setValue(1)
+                capIdRef.setValue(0)
+                capTeamRef.setValue(0).await()
+            } catch (e: Exception) {
+                mutableScreenName.value = ScreenName.Error(e.message ?: "Error in set database")
+            }
+        }
 
         ConstantCards.shuffleInstantCards()
         ConstantCards.shufflePermanentCards()
         ConstantCards.getCardList1()
         setCards(ref)
 
-        var discard1 = ref.child("Discard1").addValueEventListener(object: ValueEventListener {
+        ref.child("Discard1").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-               // println("discarded1 cards $discarded")
-                if(snapshot.value != null)
+                println("discarded1 card $discarded")
+                if (snapshot.value != null && Integer.valueOf(snapshot.value.toString()) != -1) {
                     ConstantCards.pickCard(Integer.valueOf(snapshot.value.toString()), "uno")
-                if(discarded)
-                    setCards(ref)
-                discarded = !discarded
-            }
-            override fun onCancelled(error: DatabaseError) {
-                mutableScreenName.value = ScreenName.Error(error.message)
-            }
-        })
-
-        var discard2 = ref.child("Discard2").addValueEventListener(object: ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-              //  println("discarded2 cards $discarded")
-                if(snapshot.value != null)
-                    ConstantCards.pickCard(Integer.valueOf(snapshot.value.toString()), "due")
-                if(discarded)
-                    setCards(ref)
-                discarded = !discarded
-            }
-            override fun onCancelled(error: DatabaseError) {
-                mutableScreenName.value = ScreenName.Error(error.message)
-            }
-        })
-
-        phaseRef.addValueEventListener(object: ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-               // println("onDataChange with ${snapshot.value}")
-                if(snapshot.value.toString() != "0"){
-                    endPhase()
+                    if (discarded)
+                        setCards(ref)
+                    discarded = !discarded
                 }
             }
             override fun onCancelled(error: DatabaseError) {
@@ -453,9 +519,32 @@ class GameManager(private val scope:CoroutineScope) {
             }
         })
 
-        turnRef.addValueEventListener(object: ValueEventListener {
+        ref.child("Discard2").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                //println("turn changed")
+                println("discarded2 card $discarded")
+                if (snapshot.value != null && Integer.valueOf(snapshot.value.toString()) != -1) {
+                    ConstantCards.pickCard(Integer.valueOf(snapshot.value.toString()), "due")
+                    if (discarded)
+                        setCards(ref)
+                    discarded = !discarded
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                mutableScreenName.value = ScreenName.Error(error.message)
+            }
+        })
+
+        phaseRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                phase = Integer.valueOf(snapshot.value.toString())
+            }
+            override fun onCancelled(error: DatabaseError) {
+                mutableScreenName.value = ScreenName.Error(error.message)
+            }
+        })
+
+        turnRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
                 turn = Integer.valueOf(snapshot.value.toString())
             }
             override fun onCancelled(error: DatabaseError) {
@@ -463,7 +552,7 @@ class GameManager(private val scope:CoroutineScope) {
             }
         })
 
-        capIdRef.addValueEventListener(object: ValueEventListener {
+        capIdRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 capId = Integer.valueOf(snapshot.value.toString())
                 currentPlayer.setPlayerId(capId)
@@ -473,63 +562,65 @@ class GameManager(private val scope:CoroutineScope) {
             }
         })
 
-        capTeamRef.addValueEventListener(object: ValueEventListener {
+        capTeamRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-               // println("hello with ${snapshot.value}")
-                currentPlayer.setPlayerTeam(Integer.valueOf(snapshot.value.toString()))
+                capTeam = Integer.valueOf(snapshot.value.toString())
+                currentPlayer.setPlayerTeam(capTeam)
+                when (capTeam - 1) {
+                    0 -> rMiniTemp += rMiniPts
+                    1 -> bMiniTemp += bMiniPts
+                    2 -> gMiniTemp += gMiniPts
+                    -1 -> yMiniTemp += yMiniPts
+                }
             }
             override fun onCancelled(error: DatabaseError) {
                 mutableScreenName.value = ScreenName.Error(error.message)
             }
         })
 
-        yMiniPoints.addValueEventListener(object: ValueEventListener {
+        yellow.child("MiniPoints").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-               // println("yellow minipts changed ${snapshot.value}")
                 val v = snapshot.value
-                if (v!=null && v is Map<*, *>) yMiniPts = addYellowPoints(v as Map<String,Int>)
+                if (v != null && v is Map<*, *>) yMiniPts = addPoints(v as Map<String, Int>)
             }
             override fun onCancelled(error: DatabaseError) {
                 mutableScreenName.value = ScreenName.Error(error.message)
             }
         })
 
-        bMiniPoints.addValueEventListener(object: ValueEventListener {
+        blue.child("MiniPoints").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-               // println("blue minipts changed ${snapshot.value}")
                 val v = snapshot.value
-                if (v!=null && v is Map<*, *>) bMiniPts = addBluePoints(v as Map<String,Int>)
+                if (v != null && v is Map<*, *>) bMiniPts = addPoints(v as Map<String, Int>)
             }
             override fun onCancelled(error: DatabaseError) {
                 mutableScreenName.value = ScreenName.Error(error.message)
             }
         })
 
-        rMiniPoints.addValueEventListener(object: ValueEventListener {
+        red.child("MiniPoints").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-               // println("red minipts changed ${snapshot.value}")
                 val v = snapshot.value
-                if (v!=null && v is Map<*, *>) rMiniPts = addRedPoints(v as Map<String,Int>)
+                if (v != null && v is Map<*, *>) rMiniPts = addPoints(v as Map<String, Int>)
             }
             override fun onCancelled(error: DatabaseError) {
                 mutableScreenName.value = ScreenName.Error(error.message)
             }
         })
 
-        gMiniPoints.addValueEventListener(object: ValueEventListener {
+        green.child("MiniPoints").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-               // println("green minipts changed ${snapshot.value}")
                 val v = snapshot.value
-                if (v!=null && v is Map<*, *>) gMiniPts = addGreenPoints(v as Map<String,Int>)
+                if (v != null && v is Map<*, *>) gMiniPts = addPoints(v as Map<String, Int>)
             }
             override fun onCancelled(error: DatabaseError) {
                 mutableScreenName.value = ScreenName.Error(error.message)
             }
         })
 
-        var cardsRef1 = ref.child("5Cards").child("1").addValueEventListener(object: ValueEventListener {
+        ref.child("5Cards").child("1").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-               // println("card1 changed ${snapshot.value}")
+                println("card1 changed ${snapshot.value}")
                 card1 = Integer.valueOf(snapshot.value.toString())
             }
             override fun onCancelled(error: DatabaseError) {
@@ -537,19 +628,19 @@ class GameManager(private val scope:CoroutineScope) {
             }
         })
 
-        var cardsRef2 = ref.child("5Cards").child("2").addValueEventListener(object: ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-               // println("cards changed ${snapshot.value}")
-                card2 = Integer.valueOf(snapshot.value.toString())
-            }
-            override fun onCancelled(error: DatabaseError) {
-                mutableScreenName.value = ScreenName.Error(error.message)
-            }
+        ref.child("5Cards").child("2").addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    println("card2 changed ${snapshot.value}")
+                    card2 = Integer.valueOf(snapshot.value.toString())
+                }
+                override fun onCancelled(error: DatabaseError) {
+                    mutableScreenName.value = ScreenName.Error(error.message)
+                }
         })
 
-        var cardsRef3 = ref.child("5Cards").child("3").addValueEventListener(object: ValueEventListener {
+        ref.child("5Cards").child("3").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-               // println("cards changed ${snapshot.value}")
+                println("card3 changed ${snapshot.value}")
                 card3 = Integer.valueOf(snapshot.value.toString())
             }
             override fun onCancelled(error: DatabaseError) {
@@ -557,9 +648,9 @@ class GameManager(private val scope:CoroutineScope) {
             }
         })
 
-        var cardsRef4 = ref.child("5Cards").child("4").addValueEventListener(object: ValueEventListener {
+        ref.child("5Cards").child("4").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-               // println("cards changed ${snapshot.value}")
+                println("card4 changed ${snapshot.value}")
                 card4 = Integer.valueOf(snapshot.value.toString())
             }
             override fun onCancelled(error: DatabaseError) {
@@ -567,9 +658,9 @@ class GameManager(private val scope:CoroutineScope) {
             }
         })
 
-        var cardsRef5 = ref.child("5Cards").child("5").addValueEventListener(object: ValueEventListener {
+        ref.child("5Cards").child("5").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-               // println("cards changed ${snapshot.value}")
+                println("card5 changed ${snapshot.value}")
                 card5 = Integer.valueOf(snapshot.value.toString())
             }
             override fun onCancelled(error: DatabaseError) {
@@ -577,20 +668,21 @@ class GameManager(private val scope:CoroutineScope) {
             }
         })
 
-        var blueCards = blue.child("Cards").addValueEventListener(object: ValueEventListener {
+        blue.child("Cards").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 println("blue cards changed ${snapshot.value}")
                 if (snapshot.value.toString() != "0") {
-                    var arr = snapshot.value.toString().drop(1).split(" ").toTypedArray()
+                    val arr = snapshot.value.toString().drop(1).split(" ").toTypedArray()
                     for (i in arr.indices) {
                         arr[i] = arr[i].takeWhile { it.isDigit() }
                         println("arri ${arr[i]}")
-                        if(!bCards.contains(Integer.valueOf(arr[i])) && Integer.valueOf(arr[i]) != 88){
+                        if (!bCards.contains(Integer.valueOf(arr[i])) && Integer.valueOf(arr[i]) != 88) {
                             bCards.add(Integer.valueOf(arr[i]))
                             uploadDeck(Integer.valueOf(arr[i]), "Blue")
+                            mutableScreenName.value = ScreenName.Home("")
+                            mutableScreenName.value = ScreenName.Menu //TODO funziona visivamente ma non è bello così
                         }
                     }
-                    //if(bCards.size % 2 != 1) doTheMath(bCards, "Blue")
                 }
             }
             override fun onCancelled(error: DatabaseError) {
@@ -599,20 +691,21 @@ class GameManager(private val scope:CoroutineScope) {
         })
 
 
-        var redCards = red.child("Cards").addValueEventListener(object: ValueEventListener {
+        red.child("Cards").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 println("red cards changed ${snapshot.value}")
                 if (snapshot.value.toString() != "0") {
-                    var arr = snapshot.value.toString().drop(1).split(" ").toTypedArray()
+                    val arr = snapshot.value.toString().drop(1).split(" ").toTypedArray()
                     for (i in arr.indices) {
                         arr[i] = arr[i].takeWhile { it.isDigit() }
                         println("arri ${arr[i]}")
-                        if(!rCards.contains(Integer.valueOf(arr[i])) && Integer.valueOf(arr[i]) != 88){
+                        if (!rCards.contains(Integer.valueOf(arr[i])) && Integer.valueOf(arr[i]) != 88) {
                             rCards.add(Integer.valueOf(arr[i]))
                             uploadDeck(Integer.valueOf(arr[i]), "Red")
+                            mutableScreenName.value = ScreenName.Home("")
+                            mutableScreenName.value = ScreenName.Menu //TODO funziona visivamente ma non è bello così
                         }
                     }
-                    //if(rCards.size % 2 != 1) doTheMath(rCards, "Red")
                 }
             }
             override fun onCancelled(error: DatabaseError) {
@@ -621,20 +714,21 @@ class GameManager(private val scope:CoroutineScope) {
         })
 
 
-        var greenCards = green.child("Cards").addValueEventListener(object: ValueEventListener {
+        green.child("Cards").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 println("green cards changed ${snapshot.value}")
                 if (snapshot.value.toString() != "0") {
-                    var arr = snapshot.value.toString().drop(1).split(" ").toTypedArray()
+                    val arr = snapshot.value.toString().drop(1).split(" ").toTypedArray()
                     for (i in arr.indices) {
                         arr[i] = arr[i].takeWhile { it.isDigit() }
                         println("arri ${arr[i]}")
-                        if(!gCards.contains(Integer.valueOf(arr[i])) && Integer.valueOf(arr[i]) != 88){
+                        if (!gCards.contains(Integer.valueOf(arr[i])) && Integer.valueOf(arr[i]) != 88) {
                             gCards.add(Integer.valueOf(arr[i]))
                             uploadDeck(Integer.valueOf(arr[i]), "Green")
+                            mutableScreenName.value = ScreenName.Home("")
+                            mutableScreenName.value = ScreenName.Menu //TODO funziona visivamente ma non è bello così
                         }
                     }
-                    //if(gCards.size % 2 != 1) doTheMath(gCards, "Green")
                 }
             }
             override fun onCancelled(error: DatabaseError) {
@@ -643,20 +737,22 @@ class GameManager(private val scope:CoroutineScope) {
         })
 
 
-        var yellowCards = yellow.child("Cards").addValueEventListener(object: ValueEventListener {
+        yellow.child("Cards").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 println("yellow cards changed ${snapshot.value}")
                 if (snapshot.value.toString() != "0") {
-                    var arr = snapshot.value.toString().drop(1).split(" ").toTypedArray()
+                    val arr = snapshot.value.toString().drop(1).split(" ").toTypedArray()
                     for (i in arr.indices) {
                         arr[i] = arr[i].takeWhile { it.isDigit() }
                         println("arri ${arr[i]}")
-                        if(!yCards.contains(Integer.valueOf(arr[i])) && Integer.valueOf(arr[i]) != 88){
+                        if (!yCards.contains(Integer.valueOf(arr[i])) && Integer.valueOf(arr[i]) != 88) {
                             yCards.add(Integer.valueOf(arr[i]))
                             uploadDeck(Integer.valueOf(arr[i]), "Yellow")
+                            mutableScreenName.value = ScreenName.Home("")
+                            if(turn == 4) mutableScreenName.value = ScreenName.MiniRank
+                            else mutableScreenName.value = ScreenName.Menu //TODO funziona visivamente ma non è bello così
                         }
                     }
-                    //if(yCards.size % 2 != 1) doTheMath(yCards, "Yellow")
                 }
             }
             override fun onCancelled(error: DatabaseError) {
@@ -664,189 +760,296 @@ class GameManager(private val scope:CoroutineScope) {
             }
         })
 
-        var redVictory = red.child("VictoryPoints").addValueEventListener(object: ValueEventListener {
+        red.child("VictoryPoints").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                println("red victory changed ${snapshot.value}")
-                rVictory = Integer.valueOf(snapshot.value.toString())
+                rVictory += Integer.valueOf(snapshot.value.toString())
+                println("red victory changed $rVictory")
             }
             override fun onCancelled(error: DatabaseError) {
                 mutableScreenName.value = ScreenName.Error(error.message)
             }
         })
 
-        var blueVictory = blue.child("VictoryPoints").addValueEventListener(object: ValueEventListener {
+        blue.child("VictoryPoints").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                println("blue victory changed ${snapshot.value}")
-                bVictory = Integer.valueOf(snapshot.value.toString())
+                bVictory += Integer.valueOf(snapshot.value.toString())
+                println("blue victory changed $bVictory")
             }
             override fun onCancelled(error: DatabaseError) {
                 mutableScreenName.value = ScreenName.Error(error.message)
             }
         })
 
-        var greenVictory = green.child("VictoryPoints").addValueEventListener(object: ValueEventListener {
+        green.child("VictoryPoints").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                println("green victory changed ${snapshot.value}")
-                gVictory = Integer.valueOf(snapshot.value.toString())
+                gVictory += Integer.valueOf(snapshot.value.toString())
+                println("green victory changed $gVictory")
             }
             override fun onCancelled(error: DatabaseError) {
                 mutableScreenName.value = ScreenName.Error(error.message)
             }
         })
 
-        var yellowVictory = yellow.child("VictoryPoints").addValueEventListener(object: ValueEventListener {
+        yellow.child("VictoryPoints").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                println("yellow victory changed ${snapshot.value}")
-                yVictory = Integer.valueOf(snapshot.value.toString())
+                yVictory += Integer.valueOf(snapshot.value.toString())
+                println("yellow victory changed $yVictory")
             }
             override fun onCancelled(error: DatabaseError) {
                 mutableScreenName.value = ScreenName.Error(error.message)
             }
         })
 
+        ref.child("Order").child("0").addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                teamNames[0] = snapshot.value.toString()
+            }
+            override fun onCancelled(error: DatabaseError) {
+                mutableScreenName.value = ScreenName.Error(error.message)
+            }
+        })
 
-        red.setValue(
-            mapOf(
-                "MiniPoints" to 0,
-                "VictoryPoints" to 0,
-                "Cards" to 0,
-                "Money" to 0,
-                "Energy" to 0
-            )
-        )
+        ref.child("Order").child("1").addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                teamNames[1] = snapshot.value.toString()
+            }
+            override fun onCancelled(error: DatabaseError) {
+                mutableScreenName.value = ScreenName.Error(error.message)
+            }
+        })
 
-        blue.setValue(
-            mapOf(
-                "MiniPoints" to 0,
-                "VictoryPoints" to 0,
-                "Cards" to 0,
-                "Money" to 0,
-                "Energy" to 0
-            )
-        )
-        yellow.setValue(
-            mapOf(
-                "MiniPoints" to 0,
-                "VictoryPoints" to 0,
-                "Cards" to 0,
-                "Money" to 0,
-                "Energy" to 0
-            )
-        )
-        green.setValue(
-            mapOf(
-                "MiniPoints" to 0,
-                "VictoryPoints" to 0,
-                "Cards" to 0,
-                "Money" to 0,
-                "Energy" to 0
-            )
-        )
+        ref.child("Order").child("2").addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                teamNames[2] = snapshot.value.toString()
+            }
+            override fun onCancelled(error: DatabaseError) {
+                mutableScreenName.value = ScreenName.Error(error.message)
+            }
+        })
+
+        ref.child("Order").child("3").addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                teamNames[3] = snapshot.value.toString()
+            }
+            override fun onCancelled(error: DatabaseError) {
+                mutableScreenName.value = ScreenName.Error(error.message)
+            }
+        })
+
+        ref.child("TemporaryCap").addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.value != null)
+                    temporaryCap = snapshot.value.toString()
+            }
+            override fun onCancelled(error: DatabaseError) {
+                mutableScreenName.value = ScreenName.Error(error.message)
+            }
+        })
+
+        scope.launch {
+            try {
+                red.setValue(
+                    mapOf(
+                        "MiniPoints" to 0,
+                        "VictoryPoints" to 0,
+                        "Cards" to 0,
+                    )
+                )
+
+                blue.setValue(
+                    mapOf(
+                        "MiniPoints" to 0,
+                        "VictoryPoints" to 0,
+                        "Cards" to 0,
+                    )
+                )
+                yellow.setValue(
+                    mapOf(
+                        "MiniPoints" to 0,
+                        "VictoryPoints" to 0,
+                        "Cards" to 0,
+                    )
+                )
+                green.setValue(
+                    mapOf(
+                        "MiniPoints" to 0,
+                        "VictoryPoints" to 0,
+                        "Cards" to 0,
+                    )
+                ).await()
+            }catch (e: Exception) {
+                mutableScreenName.value = ScreenName.Error(e.message?:"Error in pick cards")
+            }
+        }
+
+        ref.child("Order").child("0").setValue("Red")
+        ref.child("Order").child("1").setValue("Blue")
+        ref.child("Order").child("2").setValue("Green")
+        ref.child("Order").child("3").setValue("Yellow")
     }
 
     fun setCards(ref : DatabaseReference){
-        var cards = ConstantCards.getCurrentList()
+        cards = ConstantCards.getCurrentList()
         selectFiveCards(cards, ref)
     }
 
-    fun selectFiveCards(cards : ArrayList<Card>, ref : DatabaseReference){
-        ref.child("5Cards").child("1").setValue(cards[0].idC)
-        ref.child("5Cards").child("2").setValue(cards[1].idC)
-        ref.child("5Cards").child("3").setValue(cards[2].idC)
-        ref.child("5Cards").child("4").setValue(cards[3].idC)
-        ref.child("5Cards").child("5").setValue(cards[4].idC)
+    fun getCardImage(id: Int) : Card {
+        return ConstantCards.getCardByID(id)
     }
 
-    fun addRedPoints(players: Map<String, Int>) : Int{
-        val points = players.values.sum()
-        //println("punti rossi $points")
-        return points
+    private fun selectFiveCards(cards : ArrayList<Card>, ref : DatabaseReference){
+        scope.launch {
+            try {
+                ref.child("5Cards").child("1").setValue(cards[0].idC)
+                ref.child("5Cards").child("2").setValue(cards[1].idC)
+                ref.child("5Cards").child("3").setValue(cards[2].idC)
+                ref.child("5Cards").child("4").setValue(cards[3].idC)
+                ref.child("5Cards").child("5").setValue(cards[4].idC).await()
+            }catch (e:Exception) {
+                mutableScreenName.value = ScreenName.Error(e.message ?: "Error in loading cards")
+            }
+        }
     }
 
-    fun addBluePoints(players: Map<String, Int>) : Int{
-        val points = players.values.sum()
-        //println("punti blu $points")
-        return 0
-    }
-
-    fun addGreenPoints(players: Map<String, Int>) : Int{
-        val points = players.values.sum()
-       // println("punti verdi  $points")
-        return points
-    }
-
-    fun addYellowPoints(players: Map<String, Int>) : Int{
-        val points = players.values.sum()
-        //println("punti gialli $points")
-        return points
-    }
-
-    fun endTurn(teams : Teams){
-        // TODO prendere riferimento di chi ha appena schiacciato il bottone di endturn
-        //disabilitare modifiche alla sua squadra
-        //cambiare il riferimento alla squadra in possesso del turno
-        //avviare schermata mascotte passando il riferimento della squadra corrente
+    fun addPoints(players: Map<String, Int>): Int {
+        return players.values.sum()
     }
 
     fun changeTurn(){
-        var oldCapTeam = currentPlayer.getPlayerTeam()
-        //println("old cap id $capId , team $oldCapTeam")
-       // println("sizes $sizes")
-        //println("game $gameID")
+        capTeam++
+        var rankTime = false
+        val newCap = (capTeam) % teamNames.size
+        currentPlayer.setPlayerTeam(newCap)
 
-        oldCapTeam++
-       // println("nuovo oldcapteam ${(oldCapTeam) % teamNames.size}")
+        firebase.getReference(gameID.toString()).child("CaptainTeam").setValue(newCap)
+        firebase.getReference(gameID.toString()).child("TemporaryCap").setValue("")
 
-        firebase.getReference(gameID.toString()).child("CaptainTeam").setValue((oldCapTeam) % teamNames.size)
-
-        if(currentPlayer.getPlayerTeam() == 0){
+        if(newCap == 0) {
             capId++
-           // println("old turn $turn")
-            if (turn++ == 4){
-                turn = 1
-                firebase.getReference(gameID.toString()).child("Phase").setValue(phase + 1)
+            turn++
+            if (turn == 4) {
+                scope.launch{
+                    try{
+                        firebase.getReference(gameID.toString()).child("screen").setValue("Ranking").await()
+                    }catch (e:Exception) {
+                        mutableScreenName.value = ScreenName.Error(e.message ?: "Error in Ranking")
+                    }
+                }
+                rankTime = true
+                phase++
+                firebase.getReference(gameID.toString()).child("Phase").setValue(phase)
             }
             firebase.getReference(gameID.toString()).child("CaptainID").setValue(capId)
             firebase.getReference(gameID.toString()).child("Turn").setValue(turn)
-           // println("now turn $turn")
         }
-        //currentPlayer.setPlayerId(capId % sizes[currentPlayer.getPlayerTeam()])
-       // println("now id ${currentPlayer.getPlayerId()}, team ${currentPlayer.getPlayerTeam()}")
+        if(!rankTime) goToHome()
     }
 
     fun getTurn() : Int{
-       // println("turno $turn, capID $capId")
-        //return turn //TODO questo è quello giusto
-        return (capId + 1)
+        return turn
     }
 
-    fun endPhase() {
+    fun startNewPhase(){
+        turn = 1
+        firebase.getReference(gameID.toString()).child("Turn").setValue(turn)
         val ref = firebase.getReference(gameID.toString())
+        val rank = getMiniRank()
 
-        phase++
-       // println("endphase here")
-        ranking.sortDescending()
-        //TODO separatore tra le fasi + calcolo classifica
+        when(phase) {
+            1 -> ConstantCards.getCardList2()
+            2 -> ConstantCards.getCardList3()
+            3 -> {
+                doTheMath(rDeck,"Red")
+                doTheMath(bDeck, "Blue")
+                doTheMath(gDeck, "Green")
+                doTheMath(yDeck, "Yellow")
+            }
+        }
+
+        for(i in rank.indices){
+            println("RANKI FIRST ${rank[i]}")
+            when(rank[i].first){
+                "Red" -> {
+                    ref.child("Red").child("VictoryPoints").setValue(10 - (3*i))
+                    ref.child("Order").child((3-i).toString()).setValue("Red")
+                }
+                "Blue" -> {
+                    ref.child("Blue").child("VictoryPoints").setValue(10 - (3*i))
+                    ref.child("Order").child((3-i).toString()).setValue("Blue")
+                }
+                "Green" -> {
+                    ref.child("Green").child("VictoryPoints").setValue(10 - (3*i))
+                    ref.child("Order").child((3-i).toString()).setValue("Green")
+                }
+                "Yellow" -> {
+                    ref.child("Yellow").child("VictoryPoints").setValue(10 - (3*i))
+                    ref.child("Order").child((3-i).toString()).setValue("Yellow")
+                }
+            }
+        }
+
+        setCards(ref)
+        rMiniTemp = 0
+        bMiniTemp = 0
+        gMiniTemp = 0
+        yMiniTemp = 0
+
+        if(phase == 3)
+            ref.child("screen").setValue("Ending")
+        else
+            ref.child("screen").setValue("Playing")
+    }
+
+    fun getMiniRank() : List<Pair<String, Int>> {
+        val tempRank = arrayOf(Pair("Red", rMiniTemp), Pair("Blue", bMiniTemp), Pair("Green", gMiniTemp), Pair("Yellow", yMiniTemp))
+        return tempRank.sortedWith(compareBy { it.second }).asReversed()
+    }
+
+    fun getPlayerRank() : Int {
+        val tempRank = arrayOf(
+            Pair("Red", rMiniTemp),
+            Pair("Blue", bMiniTemp),
+            Pair("Green", gMiniTemp),
+            Pair("Yellow", yMiniTemp)
+        )
+        for(i in tempRank.indices) {
+            if (tempRank.sortedWith(compareBy { it.second }).asReversed()[i].first == getMyTeam()) return i
+        }
+        return -1
     }
 
     fun startFlappy() {
-        mutableScreenName.value = ScreenName.Flappy
-        //TODO try catch da mettere a posto e impostare schermata solo per un team
+        scope.launch{
+            try{
+                firebase.getReference(gameID.toString()).child("screen").setValue("Flappy").await()
+            } catch (e:Exception) {
+                mutableScreenName.value = ScreenName.Error(e.message ?: "Error in Starting Flappy")
+            }
+        }
     }
 
     fun startQuiz(){
-        mutableScreenName.value = ScreenName.Quiz
-        //TODO try catch da mettere a posto e impostare schermata solo per un team
+        scope.launch{
+            try{
+                firebase.getReference(gameID.toString()).child("screen").setValue("Quiz").await()
+            } catch (e:Exception) {
+                mutableScreenName.value = ScreenName.Error(e.message ?: "Error in Starting Quiz")
+            }
+        }
     }
 
     fun isPlayerTurn() : Boolean{
-        player.setYourTurn(capId)
-        return player.isYourTurn()
+        //println("ISPLAYERTURN $capId, ${player.getPlayerId()}")
+        return if(temporaryCap == playerName)
+            true
+        else player.isYourTurn(capId, sizes, getMyTeam())
     }
 
     fun isTeamTurn() : Boolean{
-        player.setYourTeamTurn(turn)
-        return player.isYourTeamTurn()
+        //println("ISTEAMTURN ${teamNames[capTeam]}, ${getMyTeam()}")
+        return if(temporaryCap == playerName)
+            true
+        else player.isYourTeamTurn(capTeam, getMyTeam(), teamNames)
     }
 
     fun startMemory() {
@@ -864,20 +1067,30 @@ class GameManager(private val scope:CoroutineScope) {
             EmojiModel("😢"),
             EmojiModel("😂"),
         ).apply { shuffle() }
-        mutableScreenName.value = ScreenName.Memory
-        //TODO try catch da mettere a posto
+        scope.launch{
+            try{
+
+                firebase.getReference(gameID.toString()).child("screen").setValue("Memory").await()
+            } catch (e:Exception) {
+                mutableScreenName.value = ScreenName.Error(e.message ?: "Error in Starting Memory")
+            }
+        }
     }
 
     fun sendMiniResult(pts : Int) {
-        //println("sendminiresult cooking")
+        firebase.getReference(gameID.toString()).child(getMyTeam()).child("MiniPoints").child(playerName).setValue(0)
         firebase.getReference(gameID.toString()).child(getMyTeam()).child("MiniPoints").child(playerName).setValue(pts)
-        mutableScreenName.value = ScreenName.Cards(getMyTeam())
-        //TODO calcolare e inviare al server il punteggio di squadra del minigame, mettere riferimento a squadra
+        mutableScreenName.value = ScreenName.WaitingMini
+    }
+
+    fun endMinigame() {
+        firebase.getReference(gameID.toString()).child("screen").setValue("Cards")
     }
 
     fun pickCards(one: Int, two: Int, check1 : Int?, cardOne : Int?, check2 : Int?, cardTwo : Int?){
-        var min: Int
-        var max: Int
+        val min: Int
+        val max: Int
+        val fiveCards = ArrayList<Int>()
 
         if(cardOne != null && check1 != null)
             if(cardOne == 88) setVehicleFromUnexpected(one, check1)
@@ -898,61 +1111,100 @@ class GameManager(private val scope:CoroutineScope) {
             max = one
             min = two
         }
-        if(max in 21..25 || min in 21..25) checkCard(1, "Energy")
-        if(max in 26..30 || min in 26..30) checkCard(2, "Energy")
-        if(max in 36..40 || min in 36..40) checkCard(1, "Money")
-        if(max in 41..45 || min in 41..45) checkCard(2, "Money")
-        when (max) {
-            1 -> {
-                firebase.getReference(gameID.toString()).child(getMyTeam()).child("Cards")
-                    .child(card1.toString()).setValue(card1)
-            }
-            2 -> {
-                firebase.getReference(gameID.toString()).child(getMyTeam()).child("Cards")
-                    .child(card2.toString()).setValue(card2)
-            }
-            3 -> {
-                firebase.getReference(gameID.toString()).child(getMyTeam()).child("Cards")
-                    .child(card3.toString()).setValue(card3)
-            }
-            4 -> {
-                firebase.getReference(gameID.toString()).child(getMyTeam()).child("Cards")
-                    .child(card4.toString()).setValue(card4)
-            }
-            5 -> {
-                firebase.getReference(gameID.toString()).child(getMyTeam()).child("Cards")
-                    .child(card5.toString()).setValue(card5)
-            }
+
+        fiveCards.add(card1)
+        fiveCards.add(card2)
+        fiveCards.add(card3)
+        fiveCards.add(card4)
+        fiveCards.add(card5)
+/*
+        if(fiveCards[max-1] in 21..25 || fiveCards[min-1] in 21..25) checkCard(1, "Energy")
+        if(fiveCards[max-1] in 26..30 || fiveCards[min-1] in 26..30) checkCard(2, "Energy")
+        if(fiveCards[max-1] in 36..40 || fiveCards[min-1] in 36..40) checkCard(1, "Money")
+        if(fiveCards[max-1] in 41..45 || fiveCards[min-1] in 41..45) checkCard(2, "Money")
+
+ */
+        if(max == 6){
+            firebase.getReference(gameID.toString()).child(getMyTeam()).child("Cards")
+                .child(special.toString()).setValue(special)
+            special++
         }
+        else
+            firebase.getReference(gameID.toString()).child(getMyTeam()).child("Cards")
+                .child(fiveCards[max-1].toString()).setValue(fiveCards[max-1])
+        firebase.getReference(gameID.toString()).child("Discard1").setValue(-1)
         firebase.getReference(gameID.toString()).child("Discard1").setValue(max)
-        when (min) {
-            1 -> {
-                firebase.getReference(gameID.toString()).child(getMyTeam()).child("Cards")
-                    .child(card1.toString()).setValue(card1)
-            }
-            2 -> {
-                firebase.getReference(gameID.toString()).child(getMyTeam()).child("Cards")
-                    .child(card2.toString()).setValue(card2)
-            }
-            3 -> {
-                firebase.getReference(gameID.toString()).child(getMyTeam()).child("Cards")
-                    .child(card3.toString()).setValue(card3)
-            }
-            4 -> {
-                firebase.getReference(gameID.toString()).child(getMyTeam()).child("Cards")
-                    .child(card4.toString()).setValue(card4)
-            }
-            5 -> {
-                firebase.getReference(gameID.toString()).child(getMyTeam()).child("Cards")
-                    .child(card5.toString()).setValue(card5)
+        if(min == 6){
+            firebase.getReference(gameID.toString()).child(getMyTeam()).child("Cards")
+                .child(special.toString()).setValue(special)
+            special++
+        }
+        else
+            firebase.getReference(gameID.toString()).child(getMyTeam()).child("Cards")
+                .child(fiveCards[min-1].toString()).setValue(fiveCards[min-1])
+        firebase.getReference(gameID.toString()).child("Discard2").setValue(-1)
+        firebase.getReference(gameID.toString()).child("Discard2").setValue(min)
+        /*
+        scope.launch {
+            try{
+                when (max) {
+                    1 -> {
+                        firebase.getReference(gameID.toString()).child(getMyTeam()).child("Cards")
+                            .child(card1.toString()).setValue(card1)
+                    }
+                    2 -> {
+                        firebase.getReference(gameID.toString()).child(getMyTeam()).child("Cards")
+                            .child(card2.toString()).setValue(card2)
+                    }
+                    3 -> {
+                        firebase.getReference(gameID.toString()).child(getMyTeam()).child("Cards")
+                            .child(card3.toString()).setValue(card3)
+                    }
+                    4 -> {
+                        firebase.getReference(gameID.toString()).child(getMyTeam()).child("Cards")
+                            .child(card4.toString()).setValue(card4)
+                    }
+                    5 -> {
+                        firebase.getReference(gameID.toString()).child(getMyTeam()).child("Cards")
+                            .child(card5.toString()).setValue(card5)
+                    }
+                }
+                firebase.getReference(gameID.toString()).child("Discard1").setValue(-1)
+                firebase.getReference(gameID.toString()).child("Discard1").setValue(max).await()
+                when (min) {
+                    1 -> {
+                        firebase.getReference(gameID.toString()).child(getMyTeam()).child("Cards")
+                            .child(card1.toString()).setValue(card1)
+                    }
+                    2 -> {
+                        firebase.getReference(gameID.toString()).child(getMyTeam()).child("Cards")
+                            .child(card2.toString()).setValue(card2)
+                    }
+                    3 -> {
+                        firebase.getReference(gameID.toString()).child(getMyTeam()).child("Cards")
+                            .child(card3.toString()).setValue(card3)
+                    }
+                    4 -> {
+                        firebase.getReference(gameID.toString()).child(getMyTeam()).child("Cards")
+                            .child(card4.toString()).setValue(card4)
+                    }
+                    5 -> {
+                        firebase.getReference(gameID.toString()).child(getMyTeam()).child("Cards")
+                            .child(card5.toString()).setValue(card5)
+                    }
+                }
+                firebase.getReference(gameID.toString()).child("Discard2").setValue(-1)
+                firebase.getReference(gameID.toString()).child("Discard2").setValue(min).await()
+            } catch (e: Exception) {
+                mutableScreenName.value = ScreenName.Error(e.message?:"Error in pick cards")
             }
         }
-        firebase.getReference(gameID.toString()).child("Discard2").setValue(min)
-        goToHome()
+         */
+        changeTurn()
     }
 
     fun sendFiveCards(): ArrayList<Int> {
-        var cards = ArrayList<Int>()
+        val cards = ArrayList<Int>()
         cards.add(card1)
         cards.add(card2)
         cards.add(card3)
@@ -961,42 +1213,8 @@ class GameManager(private val scope:CoroutineScope) {
         return cards
     }
 
-    fun doTheMath(cards : ArrayList<Int>, team : String){ //TODO da rivedere e o eliminare
-        var countT1 = 0
-        var countT2 = 0
-        var countT3 = 0
-        var countP = 0
-        var countE = 0
-        var countM = 0
-        var countH = -10
-        var countI = 0
-        var greenI = false
-        for(i in 0 until cards.size){
-           // println("doTheMath has ${cards[i]}")
-            if(cards[i] <= 5 || cards[i] == 91) countT1++
-            if(cards[i] in 6..10 || cards[i] == 92) countT2++
-            if(cards[i] in 11..15 || cards[i] == 93) countT3++
-            if(cards[i] in 16..20) countP++
-            if(cards[i] in 21..25) countP+=2
-            if(cards[i] in 26..30) countP+=5
-            if(cards[i] in 31..35) countH++
-            if(cards[i] in 36..40) countH+=3
-            if(cards[i] in 41..45) countH+=7
-            if(cards[i] in 46..51) countM++
-            if(cards[i] in 52..56) countM+=2
-            if(cards[i] in 57..60) countM+=3
-            if(cards[i] in 61..63) countM+=4
-            if(cards[i] in 64..69) countE++
-            if(cards[i] in 70..74) countE+=2
-            if(cards[i] in 75..78) countE+=3
-            if(cards[i] in 79..81) countE+=4
-            if(cards[i] == 87) greenI = true
-            if(cards[i] == 89) countI+=5
-            if(cards[i] == 90) countI+=3
-        }
-        var countTwo = countT2*countT2
-        if(greenI) countTwo *= 2
-        var pts = countT1*countT1 + countTwo + countT3*countT3 + countE*2 + countM + countP + countH + countI
+    private fun doTheMath(deck : ArrayList<Int>, team : String){
+        val pts = (deck[0]*deck[0] + deck[1]*deck[1] + deck[2]*deck[2]) * (deck[7]+1) + deck[3] + deck[4] + deck[5] + deck[6]*2 + deck[8]
         firebase.getReference(gameID.toString()).child(team).child("VictoryPoints").setValue(pts)
     }
 
@@ -1004,36 +1222,27 @@ class GameManager(private val scope:CoroutineScope) {
         var check = false
         when(getMyTeam()){
             "Red" -> {
-                if(what == "Money")
-                    check = rDeck[3] >= pay
-                else if(what == "Energy")
-                    check = rDeck[4] >= pay
+                if(what == "Money") check = rDeck[5] >= pay
+                else if(what == "Energy") check = rDeck[6] >= pay
             }
             "Blue" -> {
-                if(what == "Money")
-                    check = bDeck[3] >= pay
-                else if(what == "Energy")
-                    check = bDeck[4] >= pay
+                if(what == "Money") check = bDeck[5] >= pay
+                else if(what == "Energy") check = bDeck[6] >= pay
             }
             "Green" -> {
-                if(what == "Money")
-                    check = gDeck[3] >= pay
-                else if(what == "Energy")
-                    check = gDeck[4] >= pay
+                if(what == "Money") check = gDeck[5] >= pay
+                else if(what == "Energy") check = gDeck[6] >= pay
             }
             "Yellow" -> {
-                if(what == "Money")
-                    check = yDeck[3] >= pay
-                else if(what == "Energy")
-                    check = yDeck[4] >= pay
+                if(what == "Money") check = yDeck[5] >= pay
+                else if(what == "Energy") check = yDeck[6] >= pay
             }
         }
-        //TODO if check false mostrare avviso irregolarità a schermo
         return check
     }
 
-    fun   uploadDeck(c : Int, team : String){
-        var deck = arrayOf(0,0,0,0,0,0,0)
+    fun uploadDeck(c : Int, team : String){
+        val deck = arrayListOf(0,0,0,0,0,0,0,0,0)
 
         if(c == 86){
             when (team){
@@ -1044,8 +1253,7 @@ class GameManager(private val scope:CoroutineScope) {
                 "My" -> deck[5] += myDeck[4]
             }
         }
-
-        if(c <= 5 || c == 91) deck[0]++
+        if(c <= 5 || c == 91 || c == 99) deck[0]++
         if(c in 6..10 || c == 92) deck[1]++
         if(c in 11..15 || c == 93) deck[2]++
         if(c in 16..20) deck[3]++
@@ -1075,20 +1283,31 @@ class GameManager(private val scope:CoroutineScope) {
         if(c in 75..78) deck[6]+=3
         if(c in 79..81) deck[6]+=4
 
-        if(c == 82) deck[4]--
-        if(c == 83) deck[3]--
-        if(c == 84) deck[6]--
-        if(c == 85) deck[5]--
-
-       // println("deck $deck")
+        if(c == 82 && deck[4]>0) deck[4]--
+        if(c == 83 && deck[3]>0) deck[3]--
+        if(c == 84 && deck[6]>0) deck[6]--
+        if(c == 85 && deck[5]>0) deck[5]--
+        if(c == 87) deck[7]++
+        if(c == 89) deck[8]+=5
+        if(c == 90) deck[8]+=3
+        if(c > 100) deck[5]++
 
         when(team){
-            "Red" -> {rDeck = rDeck.zip(deck) { xv, yv -> xv + yv } as ArrayList<Int> }
-            "Blue" -> {bDeck = bDeck.zip(deck) { xv, yv -> xv + yv } as ArrayList<Int> }
-            "Yellow" -> {yDeck = yDeck.zip(deck) { xv, yv -> xv + yv } as ArrayList<Int> }
-            "Green" -> {gDeck = gDeck.zip(deck) { xv, yv -> xv + yv } as ArrayList<Int> }
-            "My" -> {myDeck = myDeck.zip(deck) { xv, yv -> xv + yv } as ArrayList<Int> }
+            "Red" -> {rDeck = sumDecks(rDeck, deck) }
+            "Blue" -> {bDeck = sumDecks(bDeck, deck) }
+            "Yellow" -> {yDeck = sumDecks(yDeck, deck) }
+            "Green" -> {gDeck = sumDecks(gDeck, deck) }
+            "My" -> {myDeck = sumDecks(myDeck, deck) }
         }
+    }
+
+    private fun sumDecks(deck1 : ArrayList<Int>, deck2 : ArrayList<Int>) : ArrayList<Int>{
+        //println("deck1 before $deck1")
+        //println("deck2 before $deck2")
+        for(i in 0..8)
+            deck1[i] = deck1[i] + deck2[i]
+        //println("deck after $deck1")
+        return deck1
     }
 
     fun getMyCards(): ArrayList<Int> {
@@ -1097,15 +1316,13 @@ class GameManager(private val scope:CoroutineScope) {
 
     fun goToCards2(first: Int, second: Int, i: Int) {
         mutableScreenName.value = ScreenName.Cards2(getMyTeam(), first, second, i)
-        //TODO try catch da mettere a posto
     }
 
     fun goToCards3(first: Int, second: Int, i: Int, check : Int, x : Int) {
         mutableScreenName.value = ScreenName.Cards3(getMyTeam(), first, second, i, check, x)
-        //TODO try catch da mettere a posto
     }
 
-    fun setVehicleFromUnexpected(i : Int, check : Int){
+    private fun setVehicleFromUnexpected(i : Int, check : Int){
         when (i){
             1 -> {
                 if(check == 1) card1 = 91
@@ -1135,11 +1352,17 @@ class GameManager(private val scope:CoroutineScope) {
         }
     }
 
-    fun setPenaltyFromUnexpected(i : Int, card : Int, team : Int){
-        var teams = teamNames
-        teams.remove(getMyTeam()) //TODO verificare che sia giusto, mi sa di no
-        firebase.getReference(gameID.toString()).child(teams[team-1]).child("Cards")
-            .child(card.toString()).setValue(card)
+    private fun setPenaltyFromUnexpected(i : Int, card : Int, team : Int){
+        val teams = teamNames
+        teams.remove(getMyTeam())
+        scope.launch {
+            try {
+                firebase.getReference(gameID.toString()).child(teams[team - 1]).child("Cards")
+                    .child(card.toString()).setValue(card).await()
+            } catch (e: Exception) {
+                mutableScreenName.value = ScreenName.Error(e.message ?: "Error in set penalty")
+            }
+        }
         when(i){
             1 -> { card1 = 0}
             2 -> { card2 = 0}
@@ -1147,5 +1370,46 @@ class GameManager(private val scope:CoroutineScope) {
             4 -> { card4 = 0}
             5 -> { card5 = 0}
         }
+    }
+
+    fun getAllDecks() : ArrayList<ArrayList<Int>>{
+        val decks = ArrayList<ArrayList<Int>>()
+        decks.add(rDeck)
+        decks.add(bDeck)
+        decks.add(gDeck)
+        decks.add(yDeck)
+
+        return decks
+    }
+
+    fun getMyDeck() : ArrayList<Int>{
+        return myDeck
+    }
+
+    fun getCapID() : Int{
+        return capId
+    }
+
+    fun getTeamID() : Int{
+        return capTeam
+    }
+
+    fun getFinalRank() : List<Pair<String, Int>>{
+        val tempRank = arrayOf(Pair("Red", rVictory), Pair("Blue", bVictory), Pair("Green", gVictory), Pair("Yellow", yVictory))
+        return tempRank.sortedWith(compareBy { it.second }).asReversed()
+    }
+
+    fun getFinalPlayerRank() : Int{
+        val tempRank = arrayOf(Pair("Red", rVictory), Pair("Blue", bVictory), Pair("Green", gVictory), Pair("Yellow", yVictory))
+        tempRank.sortedWith(compareBy { it.second }).asReversed()
+        for(i in tempRank.indices) {
+            if (tempRank[i].first == getMyTeam()) return i
+        }
+        return -1
+    }
+
+    fun endGame(){
+        mutableScreenName.value = ScreenName.Initial
+        //firebase.getReference(matchId.toString()).removeValue()
     }
 }

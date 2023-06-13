@@ -10,9 +10,6 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
     //GenericScreen(title = "Dashboard", modifier) {
 
     //}
-    //it.polito.did.gameskeleton.MainBottomScreen()
-    //MainContent(onStartMemory = { /*TODO*/ })
-    // TODO: ricordarsi di mettere questo in interfaccia studente e non docente
 }
 
 @Preview(showBackground = true)

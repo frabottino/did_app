@@ -33,13 +33,6 @@ fun TimelineScreen(team : String) {
             )
         }
     }
-/*
-    Column(
-        modifier = Modifier.fillMaxSize()
-            .background(Color.LightGray)
-    ) {
-        Text(text = "TIMELINE", fontSize = 20.sp)
-    }*/
 }
 
 @Composable

@@ -9,8 +9,11 @@ import it.polito.did.gameskeleton.screens.*
 @Composable
 fun BottomNavGraph(
     team: String,
-    onMascotte: () -> Unit,
     cards: ArrayList<Int>,
+    onMemory: () -> Unit,
+    onFlappy: () -> Unit,
+    onQuiz: () -> Unit,
+    deck: ArrayList<Int>,
     navController: NavHostController
 ){
     NavHost(
@@ -18,16 +21,13 @@ fun BottomNavGraph(
         startDestination = BottomBarScreen.Home.route
     ){
         composable(route = BottomBarScreen.Home.route){
-            HomeScreen(team, onMascotte)
+            HomeScreen(team, deck)
         }
         composable(route = BottomBarScreen.Managing.route){
             ManagingScreen(team, cards)
         }
-        composable(route = BottomBarScreen.Timeline.route){
-            TimelineScreen(team)
-        }/*
-        composable(route = BottomBarScreen.Naples.route){
-            NaplesScreen()
-        }*/
+        composable(route = BottomBarScreen.Mascotte.route){
+            MascotteScreen(team, onMemory, onFlappy, onQuiz)
+        }
     }
 }

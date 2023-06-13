@@ -12,7 +12,5 @@ class Team {
 
     //private val teamBoard = TeamBoard()
 
-    //TODO capire dove mettere i metodi per la gestione delle risorse
-
     //private val teamCards = List(18) {Card()}
 }

@@ -6,13 +6,11 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import it.polito.did.gameskeleton.BottomNav
 import it.polito.did.gameskeleton.GameViewModel
-//import it.polito.did.gameskeleton.MainBottomScreen
 import it.polito.did.gameskeleton.ScreenName
 import it.polito.did.gameskeleton.flappyminigame.FlappyBird
 
 @Composable
 fun MainScreen(modifier: Modifier = Modifier) {
-    //val vm: GameViewModel = viewModel() //TODO singleton
     val vm = GameViewModel.getInstance()
     val players = vm.players.observeAsState()
     when (val screenName = vm.screenName.observeAsState().value) {
@@ -20,23 +18,28 @@ fun MainScreen(modifier: Modifier = Modifier) {
         is ScreenName.Initial -> InitialScreen(
             vm::onCreateNewGame,
             vm::onJoinGame,
-            modifier)
+            modifier
+        )
         is ScreenName.SetupMatch -> SetupMatchScreen(
             screenName.matchId,
             players,
             vm::onStartGame,
-            modifier)
+            modifier
+        )
         is ScreenName.Memory -> MainContent(
             vm::onStartMemory,
             vm,
-            modifier)
-        is ScreenName.Home -> BottomNav(screenName.team, vm::onGoMascotte, vm.getMyCards(), modifier)
-        is ScreenName.Mascotte -> MascotteScreen(
+            modifier
+        )
+        is ScreenName.Home -> BottomNav(
             screenName.team,
+            vm.getMyCards(),
             vm::onStartMemory,
             vm::onStartFlappy,
             vm::onStartQuiz,
-            modifier)
+            vm.getMyDeck(),
+            modifier
+        )
         is ScreenName.Cards -> CardsScreen(
             screenName.team,
             vm::pickCards,
@@ -60,10 +63,31 @@ fun MainScreen(modifier: Modifier = Modifier) {
             screenName.check,
             screenName.x
         )
-        is ScreenName.Menu -> GameMenuScreen(screenName.team)
+        is ScreenName.MiniRank -> MiniRankingScreen(
+            vm.getMiniRank(),
+            vm::onStartPhase
+        )
+        is ScreenName.PlayerRank -> PlayerRankingScreen(
+            vm.getPlayerRank()
+        )
+        is ScreenName.Victory -> VictoryScreen(
+            vm.getFinalRank(),
+            vm::onEndgame
+        )
+        is ScreenName.PlayerVictory -> PlayerVictoryScreen(
+            vm.getFinalPlayerRank()
+        )
+        is ScreenName.Menu -> GameMenuScreen(
+            vm.getDecks(),
+            vm.getTeamList(vm.getTeamId()),
+            vm.getCapId(),
+            vm::setTempCap
+        )
         is ScreenName.Flappy -> FlappyBird()
         is ScreenName.Quiz -> QuizScreen()
         is ScreenName.WaitingStart -> WaitScreen(modifier)
+        is ScreenName.WaitingMini -> WaitForMiniGamesScreen(modifier)
+        is ScreenName.WaitingCards -> WaitForCardsScreen(screenName.team)
         is ScreenName.Dashboard -> DashboardScreen(modifier)
         is ScreenName.Playing -> PlayerScreen(screenName.team,  modifier)
         is ScreenName.Error -> ErrorScreen(screenName.message, modifier)

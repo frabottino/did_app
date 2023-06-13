@@ -14,7 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import it.polito.did.gameskeleton.ui.theme.GameSkeletonTheme
 
 @Composable
-fun HomeScreen(team: String, deck: ArrayList<Int>) {
+fun WaitForCardsScreen(team: String) {
     GameSkeletonTheme(team = team) {
         Box(
             modifier = Modifier
@@ -23,7 +23,7 @@ fun HomeScreen(team: String, deck: ArrayList<Int>) {
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = deck.toString(),
+                text = "Your Captain is choosing the cards!",
                 fontSize = MaterialTheme.typography.h3.fontSize,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
@@ -35,5 +35,5 @@ fun HomeScreen(team: String, deck: ArrayList<Int>) {
 
 @Composable
 @Preview
-fun HomeScreenPreview() {
+fun WaitForCardsScreenPreview() {
 }

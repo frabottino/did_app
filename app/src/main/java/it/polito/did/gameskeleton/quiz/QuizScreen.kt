@@ -27,26 +27,34 @@ fun QuizScreen(
 
     var pts = 15
     var questionCount = 0
+
     var timer = object: CountDownTimer(15000, 1000) {
         override fun onTick(millisUntilFinished: Long) {
-            if(questionCount == 2){
-                pts = (millisUntilFinished/1000).toInt()
-                onFinish()
-            }
+            pts = (millisUntilFinished/1000).toInt()
+            if(questionCount == 2) onFinish()
         }
         override fun onFinish() {
             if(Constants.quizCount == 0) pts = (pts/2)
-            else if(Constants.quizCount == -2) pts = 0
-            if(questionCount == 2) GameViewModel.getInstance().sendMiniPts(pts)
-            questionCount = -1
+            else if(Constants.quizCount < 0) pts = 0
+            if(questionCount == 2) {
+                GameViewModel.getInstance().sendMiniPts(pts)
+                questionCount = -1
+            }
+            else if(questionCount == 1){
+                if(Constants.quizCount == 1) pts = 2
+                GameViewModel.getInstance().sendMiniPts(pts)
+                questionCount = -1
+                GameViewModel.getInstance().onEndMiniGame()
+            }
+            else GameViewModel.getInstance().onEndMiniGame()
         }
     }
 
-    var questID : Int = java.util.Random().nextInt( 10)
+    var questID : Int = java.util.Random().nextInt( 55)
     var questID2: Int
     do {
-        questID2 = java.util.Random().nextInt(10)
-        println("quest 1 $questID quest2 $questID2")
+        questID2 = java.util.Random().nextInt(55)
+        println("quest1 $questID quest2 $questID2")
     }while(questID==questID2)
 
     timer.start()
@@ -93,7 +101,7 @@ fun QuizScreen(
                         .align(Alignment.CenterVertically),
                     onClick = {Constants.checkAnswer(1, Constants.setQuestionText(questID))
                                 questID = questID2
-                                if(questionCount++ == 2) timer.cancel()
+                                if(questionCount++ == 2) timer.onFinish()
                               },
                     text = Constants.setQuestionText(questID).optionOne
                 )
@@ -101,7 +109,7 @@ fun QuizScreen(
                     modifier = Modifier.align(Alignment.CenterVertically),
                     onClick = {Constants.checkAnswer(2, Constants.setQuestionText(questID))
                                 questID = questID2
-                                if(questionCount++ == 2) timer.cancel()
+                                if(questionCount++ == 2) timer.onFinish()
                               },
                     text = Constants.setQuestionText(questID).optionTwo
                 )
@@ -116,7 +124,7 @@ fun QuizScreen(
                         .align(Alignment.CenterVertically),
                     onClick = {Constants.checkAnswer(3, Constants.setQuestionText(questID))
                                 questID = questID2
-                                if(questionCount++ == 2) timer.cancel()
+                                if(questionCount++ == 2) timer.onFinish()
                               },
                     text = Constants.setQuestionText(questID).optionThree
                 )

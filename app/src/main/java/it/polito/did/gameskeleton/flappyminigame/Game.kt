@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.did_app.R
 import it.polito.did.gameskeleton.GameViewModel
-import it.polito.did.gameskeleton.ScreenName
 
 class Game {
     var bird = mutableStateOf(Bird(15f))
@@ -84,12 +83,13 @@ fun FlappyBird() {
     var st by remember { mutableStateOf(System.currentTimeMillis()) }
     var end: Long
 
-    val timer = object: CountDownTimer(30000, 1000) {
+    val timer = object: CountDownTimer(3000, 1000) {
         override fun onTick(millisUntilFinished: Long) {
             game.setHigh(game.passCount)
         }
         override fun onFinish() {
             vm.sendMiniPts(game.highScore)
+            vm.onEndMiniGame()
         }
     }
     timer.start()

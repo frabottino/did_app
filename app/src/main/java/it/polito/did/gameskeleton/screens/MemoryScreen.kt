@@ -32,12 +32,11 @@ fun MainContent(onStartMemory: () -> Unit,
                 vm : GameViewModel,
                 modifier: Modifier = Modifier) {
     viewModel.loadEmojis()
-    //onStartMemory
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("ciaomamma")// TODO Text(text = stringResource(id = R.string.app_name))
+                    Text("MEMORY")// TODO Text(text = stringResource(id = R.string.app_name))
                 },
                 actions = {
                     IconButton(onClick = { viewModel.loadEmojis()}) {

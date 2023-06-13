@@ -18,7 +18,6 @@ import it.polito.did.gameskeleton.GameManager
 import it.polito.did.gameskeleton.GameViewModel
 import it.polito.did.gameskeleton.ui.theme.GameSkeletonTheme
 
-//private val vm = GameViewModel() TODO singleton
 private val vm = GameViewModel.getInstance()
 @Composable
 fun MascotteScreen(team: String, onStartMemory: () -> Unit, onStartFlappy: () -> Unit, onStartQuiz: () -> Unit, modifier: Modifier = Modifier) {
@@ -30,16 +29,16 @@ fun MascotteScreen(team: String, onStartMemory: () -> Unit, onStartFlappy: () ->
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "supercazzolata del giorno:",
+                text = "${vm.getPlayerTurn()}, ${vm.getTeamTurn()}",
                 fontSize = MaterialTheme.typography.h3.fontSize,
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier.height(32.dp))
-           /* when (vm.getTurnFromGM()) {
-                1 -> {
+            when (vm.getTurnFromGM()) {
+                3 -> {
                     Button(
                         modifier = modifier.align(Alignment.Center),
-                        //enabled = vm.getPlayerTurn()&&vm.getTeamTurn(),
+                        enabled = vm.getPlayerTurn()&&vm.getTeamTurn(),
                         onClick = { onStartMemory() }) {
                         Text("GO TO MEMORY")
                     }
@@ -47,26 +46,29 @@ fun MascotteScreen(team: String, onStartMemory: () -> Unit, onStartFlappy: () ->
                 2 -> {
                     Button(
                         modifier = modifier.align(Alignment.Center),
-                        //enabled = vm.getPlayerTurn()&&vm.getTeamTurn(),
+                        enabled = vm.getPlayerTurn()&&vm.getTeamTurn(),
                         onClick = { onStartFlappy() }) {
                         Text("GO TO FLAPPY")
                     }
                 }
-                3 -> {
+                1 -> {
                     Button(
                         modifier = modifier.align(Alignment.Center),
-                        //enabled = vm.getPlayerTurn()&&vm.getTeamTurn(),
+                        enabled = vm.getPlayerTurn()&&vm.getTeamTurn(),
                         onClick = { onStartQuiz() }) {
                         Text("GO TO QUIZ")
                     }
                 }
-            }*/
+            }
+            /*
             Button(
                 modifier = modifier.align(Alignment.Center),
                 //enabled = vm.getPlayerTurn()&&vm.getTeamTurn(),
                 onClick = { onStartMemory() }) {
                 Text("GO TO QUIZ")
             }
+
+             */
         }
     }
 }

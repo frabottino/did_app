@@ -67,7 +67,7 @@ fun Cards2Screen(team: String, sendCards: KFunction6<Int, Int, Int?, Int?, Int?,
             Button(
                 modifier = Modifier.align(Alignment.BottomCenter),
                 onClick = {
-                    if(cards[second-1] != i && (cards[second-1] in 82..85 || cards[second-1] == 88))
+                    if(cards[second-1] != i && second!=6 && (cards[second-1] in 82..85 || cards[second-1] == 88))
                         vm.onGoCards3(first, second, cards[second-1], check, i)
                     else
                         sendCards(first, second, check, i, null, null )}) {

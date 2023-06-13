@@ -1,15 +1,11 @@
 package it.polito.did.gameskeleton
 
 class Player {
-    private val teams : Teams
-        get() {
-            TODO()
-        }
-    private var playerId : Int = 0
+    private var playerId : Int = -1
     private var isMyPersonalTurn : Boolean = false
     private var isMyTeamTurn : Boolean = false
     private var nickname = String
-    private var playerTeam : Int = 0
+    private var playerTeam : Int = -1
 
     fun getPlayerId() : Int{
         return playerId
@@ -20,26 +16,24 @@ class Player {
     }
 
     fun setPlayerId(id : Int){
-        playerId = id
+        if(playerId == -1) playerId = id
     }
 
     fun setPlayerTeam(team : Int){
-        playerTeam = team
+        if(playerTeam == -1) playerTeam = team
     }
 
-    fun setYourTurn(id : Int){
-        isMyPersonalTurn = playerId==id
+    fun isYourTurn(id: Int, size: ArrayList<Int>, team: String) : Boolean{
+        return when(team) {
+            "Red" -> playerId == (id % size[0])
+            "Blue" -> playerId == (id % size[1])
+            "Green" -> playerId == (id % size[2])
+            "Yellow" -> playerId == (id % size[3])
+            else -> playerId == id
+        }
     }
 
-    fun setYourTeamTurn(id : Int){
-        isMyTeamTurn = playerTeam == id
-    }
-
-    fun isYourTurn() : Boolean{
-        return isMyPersonalTurn
-    }
-
-    fun isYourTeamTurn() : Boolean{
-        return isMyTeamTurn
+    fun isYourTeamTurn(id: Int, team: String, teams: MutableList<String>) : Boolean{
+        return team == teams[id]
     }
 }

@@ -46,8 +46,6 @@ class ResultFragment : Fragment() {
                                     .padding(vertical = 24.dp, horizontal = 16.dp)
                             )
 
-                            // todo: local scoreboard - timesstamp - x/y (ranking by percentage)
-
                             Row(
                                 Modifier
                                     .fillMaxWidth()

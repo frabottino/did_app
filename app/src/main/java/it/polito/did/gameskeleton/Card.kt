@@ -3,8 +3,8 @@ package it.polito.did.gameskeleton
 class Card(
     val typeC : Int,
     val idC : Int,
-    val powC : Int
-    //val image : Int
+    val powC : Int,
+    val image : Int
 )
     {
 
@@ -13,7 +13,6 @@ class Card(
     val level = Int
     val team = String
     val type = String
-    //val image : Int
 
 
     fun getId() : Int{

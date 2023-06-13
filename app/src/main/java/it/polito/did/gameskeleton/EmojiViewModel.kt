@@ -15,7 +15,7 @@ class EmojiViewModel : ViewModel() {
 
 
 
-    var timer = object: CountDownTimer(30000, 1000) {
+    var timer = object: CountDownTimer(10000, 1000) {
         override fun onTick(millisUntilFinished: Long) {
             pts = (millisUntilFinished/1000).toInt()
         }
@@ -23,6 +23,7 @@ class EmojiViewModel : ViewModel() {
             if(!isFinished) {
                 GameViewModel.getInstance().sendMiniPts(0)
             }
+            GameViewModel.getInstance().onEndMiniGame()
         }
     }
 
@@ -84,11 +85,8 @@ class EmojiViewModel : ViewModel() {
 
         val visibleCount: Int = list?.filter { it -> it.isVisible }?.size ?: 0
         if (visibleCount <= 0) {
-            timer.cancel()
+            if(!isFinished) vm.sendMiniPts(pts)
             isFinished = true
-            vm.nextTurn()
-            vm.sendMiniPts(pts)
-            return
         }
 
         emojis.value?.removeAll { true }

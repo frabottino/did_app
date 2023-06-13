@@ -1,10 +1,5 @@
 package it.polito.did.gameskeleton
 
-import android.graphics.drawable.Icon
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.ui.graphics.Color
-import com.example.did_app.R
 
 sealed class BottomBarScreen(
     val route: String,
@@ -21,9 +16,9 @@ sealed class BottomBarScreen(
         title = "Managing",
         icon = android.R.drawable.ic_menu_manage
     )
-    object Timeline: BottomBarScreen(
-        route = "timeline",
-        title = "Timeline",
+    object Mascotte: BottomBarScreen(
+        route = "mascotte",
+        title = "Mascotte",
         icon = android.R.drawable.ic_menu_recent_history
     )
 }
