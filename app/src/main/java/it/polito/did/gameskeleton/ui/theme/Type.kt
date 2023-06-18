@@ -15,6 +15,15 @@ val comfortaaFamily = FontFamily(
     Font(R.font.comfortaa_semibold, FontWeight.SemiBold),
     Font(R.font.comfortaa_bold, FontWeight.Bold),
 )
+
+val robotoFamily = FontFamily(
+    Font(R.font.roboto_black, FontWeight.ExtraBold),
+    Font(R.font.roboto_bold, FontWeight.Bold),
+    Font(R.font.roboto_regular, FontWeight.Normal),
+    Font(R.font.roboto_light, FontWeight.Light),
+    Font(R.font.roboto_medium, FontWeight.Medium),
+    Font(R.font.roboto_thin, FontWeight.Thin),
+)
 // Set of Material typography styles to start with
 val Typography = Typography(
     comfortaaFamily,

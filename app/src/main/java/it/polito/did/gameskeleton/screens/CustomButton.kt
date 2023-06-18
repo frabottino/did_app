@@ -1,6 +1,7 @@
 package it.polito.did.gameskeleton.screens
 
 import android.util.Log
+import android.util.Size
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.padding
@@ -16,7 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import it.polito.did.gameskeleton.ui.theme.GameSkeletonTheme
 
 @Composable
@@ -24,6 +27,7 @@ fun CustomButton(
     text: String,
     modifier: Modifier = Modifier,
     textModifier: Modifier = Modifier,
+    fontSize: TextUnit = TextUnit.Unspecified,
     onClick: () -> Unit
 )
 {
@@ -33,7 +37,7 @@ fun CustomButton(
         shape = RoundedCornerShape(20),
         border = BorderStroke(2.dp, Color.Black)
     ) {
-        Text(text, modifier = Modifier.padding(10.dp).then(textModifier))
+        Text(text, modifier = Modifier.padding(10.dp).then(textModifier), textAlign = TextAlign.Center, fontSize = fontSize)
     }
 }
 
