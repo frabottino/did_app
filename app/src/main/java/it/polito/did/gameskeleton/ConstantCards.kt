@@ -17,13 +17,13 @@ object ConstantCards {
         0,2, 1, R.drawable.card02
     )
     private val transCard3 = Card(
-        0,3, 1, R.drawable.grass
+        0,3, 1, R.drawable.card03
     )
     private val transCard4 = Card(
-        0,4, 1, R.drawable.grass
+        0,4, 1, R.drawable.card04
     )
     private val transCard5 = Card(
-        0,5, 1, R.drawable.grass
+        0,5, 1, R.drawable.card05
     )
     private val transCard6 = Card(
         0,6, 2, R.drawable.card06
@@ -38,7 +38,7 @@ object ConstantCards {
         0,9, 2, R.drawable.card09
     )
     private val transCard10 = Card(
-        0,10, 2, R.drawable.grass
+        0,10, 2, R.drawable.card10
     )
     private val transCard11 = Card(
         0,11, 3, R.drawable.card11
@@ -50,100 +50,100 @@ object ConstantCards {
         0,13, 3, R.drawable.card13
     )
     private val transCard14 = Card(
-        0,14, 3, R.drawable.grass
+        0,14, 3, R.drawable.card14
     )
     private val transCard15 = Card(
-        0,15, 3, R.drawable.grass
+        0,15, 3, R.drawable.card15
     )
     private val powerCard1 = Card(
-        1, 16, 1, R.drawable.grass
+        1, 16, 1, R.drawable.card18
     )
     private val powerCard2 = Card(
-        1, 17, 1, R.drawable.grass
+        1, 17, 1, R.drawable.card18
     )
     private val powerCard3 = Card(
-        1, 18, 1, R.drawable.grass
+        1, 18, 1, R.drawable.card18
     )
     private val powerCard4 = Card(
-        1, 19, 1, R.drawable.grass
+        1, 19, 1, R.drawable.card18
     )
     private val powerCard5 = Card(
-        1, 20, 1, R.drawable.grass
+        1, 20, 1, R.drawable.card18
     )
     private val powerCard6 = Card(
-        1, 21, 2, R.drawable.grass
+        1, 21, 2, R.drawable.card19
     )
     private val powerCard7 = Card(
-        1, 22, 2, R.drawable.grass
+        1, 22, 2, R.drawable.card19
     )
     private val powerCard8 = Card(
-        1, 23, 2, R.drawable.grass
+        1, 23, 2, R.drawable.card19
     )
     private val powerCard9 = Card(
-        1, 24, 2, R.drawable.grass
+        1, 24, 2, R.drawable.card19
     )
     private val powerCard10 = Card(
-        1, 25, 2, R.drawable.grass
+        1, 25, 2, R.drawable.card19
     )
     private val powerCard11 = Card(
-        1, 26, 3, R.drawable.grass
+        1, 26, 3, R.drawable.card20
     )
     private val powerCard12 = Card(
-        1, 27, 3, R.drawable.grass
+        1, 27, 3, R.drawable.card20
     )
     private val powerCard13 = Card(
-        1, 28, 3, R.drawable.grass
+        1, 28, 3, R.drawable.card20
     )
     private val powerCard14 = Card(
-        1, 29, 3, R.drawable.grass
+        1, 29, 3, R.drawable.card20
     )
     private val powerCard15 = Card(
-        1, 30, 3, R.drawable.grass
+        1, 30, 3, R.drawable.card20
     )
     private val houseCard1 = Card(
-        2, 31, 1, R.drawable.grass
+        2, 31, 1, R.drawable.card21
     )
     private val houseCard2 = Card(
-        2, 32, 1, R.drawable.grass
+        2, 32, 1, R.drawable.card21
     )
     private val houseCard3 = Card(
-        2, 33, 1, R.drawable.grass
+        2, 33, 1, R.drawable.card21
     )
     private val houseCard4 = Card(
-        2, 34, 1, R.drawable.grass
+        2, 34, 1, R.drawable.card21
     )
     private val houseCard5 = Card(
-        2, 35, 1, R.drawable.grass
+        2, 35, 1, R.drawable.card21
     )
     private val houseCard6 = Card(
-        2, 36, 2, R.drawable.grass
+        2, 36, 2, R.drawable.card22
     )
     private val houseCard7 = Card(
-        2, 37, 2, R.drawable.grass
+        2, 37, 2, R.drawable.card22
     )
     private val houseCard8 = Card(
-        2, 38, 2, R.drawable.grass
+        2, 38, 2, R.drawable.card22
     )
     private val houseCard9 = Card(
-        2, 39, 2, R.drawable.grass
+        2, 39, 2, R.drawable.card22
     )
     private val houseCard10 = Card(
-        2, 40, 2, R.drawable.grass
+        2, 40, 2, R.drawable.card22
     )
     private val houseCard11 = Card(
-        2, 41, 3, R.drawable.grass
+        2, 41, 3, R.drawable.card23
     )
     private val houseCard12 = Card(
-        2, 42, 3, R.drawable.grass
+        2, 42, 3, R.drawable.card23
     )
     private val houseCard13 = Card(
-        2, 43, 3, R.drawable.grass
+        2, 43, 3, R.drawable.card23
     )
     private val houseCard14 = Card(
-        2, 44, 3, R.drawable.grass
+        2, 44, 3, R.drawable.card23
     )
     private val houseCard15 = Card(
-        2, 45, 3, R.drawable.money_1
+        2, 45, 3, R.drawable.card23
     )
     private val moneyCard1 = Card(
         3, 46, 1, R.drawable.money_1
@@ -254,40 +254,40 @@ object ConstantCards {
         4, 81, 4, R.drawable.energy_4
     )
     private val instActCard1 = Card(
-        5, 82, 1, R.drawable.grass
+        5, 82, 1, R.drawable.card26
     )
     private val instActCard2 = Card(
-        5, 83, 2, R.drawable.grass
+        5, 83, 2, R.drawable.card24
     )
     private val instActCard3 = Card(
-        5, 84, 3, R.drawable.grass
+        5, 84, 3, R.drawable.card25
     )
     private val instActCard4 = Card(
-        5, 85, 4, R.drawable.grass
+        5, 85, 4, R.drawable.card28
     )
     private val instActCard5 = Card(
-        5, 86, 5, R.drawable.grass
+        5, 86, 5, R.drawable.card27
     )
     private val permActCard1 = Card(
-        6, 87, 1, R.drawable.grass
+        6, 87, 1, R.drawable.card29
     )
     private val permActCard2 = Card(
-        6, 88, 2, R.drawable.grass
+        6, 88, 2, R.drawable.card30
     )
     private val permActCard3 = Card(
-        6, 89, 3, R.drawable.grass
+        6, 89, 3, R.drawable.card32
     )
     private val permActCard4 = Card(
-        6, 90, 4, R.drawable.grass
+        6, 90, 4, R.drawable.card31
     )
     private val bonusTrans1 = Card(
-        6, 91, 4, R.drawable.grass
+        6, 91, 4, R.drawable.bonuscard1
     )
     private val bonusTrans2 = Card(
-        6, 92, 4, R.drawable.grass
+        6, 92, 4, R.drawable.bonuscard2
     )
     private val bonusTrans3 = Card(
-        6, 93, 4, R.drawable.grass
+        6, 93, 4, R.drawable.bonuscard3
     )
 
     fun shuffleInstantCards() {
@@ -453,7 +453,7 @@ object ConstantCards {
             if (id == cardsList[i].idC)
                 return cardsList[i]
         }
-        return powerCard1 //TODO mitt apposto che magari non è giustissimo, ma forse si
+        return powerCard1
     }
 
     fun getAllCards() {

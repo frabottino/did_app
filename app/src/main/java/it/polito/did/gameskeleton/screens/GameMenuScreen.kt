@@ -35,10 +35,13 @@ fun GameMenuScreen(decks: ArrayList<ArrayList<Int>>, players: Collection<List<St
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
             )
+            /*
             ExposedDropdownMenu(
                 items = players.random(),
                 selected = players.random()[capId]
             )
+             */
+            //TODO non dimentichiamoci di rimetterlo
         }
     }
 }
