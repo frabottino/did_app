@@ -6,9 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -26,6 +23,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.*
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun BottomNav(
@@ -66,69 +65,26 @@ fun BottomBar(team : String, navController: NavHostController) {
     val navStackBackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navStackBackEntry?.destination
 
-    Row(
-        modifier = Modifier
-            .padding(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp)
-            .background(Color.Transparent)
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically
+    BottomNavigation(
+        backgroundColor = ChangeInColor(team),
+        modifier = Modifier.height(80.dp)
     ) {
-        screens.forEach { screen ->
-            AddItem(
-                ChangeInColor(team),
-                screen = screen,
-                currentDestination = currentDestination,
-                navController = navController
-            )
-        }
-    }
-}
-
-@Composable
-fun RowScope.AddItem(
-    background : Color,
-    screen: BottomBarScreen,
-    currentDestination: NavDestination?,
-    navController: NavHostController
-) {
-    val selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true
-
-    //val background =
-    //    if (selected) Color.Gray else Color.Transparent//MaterialTheme.colors.primary.copy(alpha = 0.6f) else Color.Transparent
-
-    val contentColor =
-        if (selected) Color.White else Color.Black
-
-    Box(
-        modifier = Modifier
-            .height(40.dp)
-            .clip(CircleShape)
-            .background(background)
-            .clickable(onClick = {
-                navController.navigate(screen.route) {
-                    popUpTo(navController.graph.findStartDestination().id)
-                    launchSingleTop = true
+        screens.forEach { item ->
+            BottomNavigationItem(
+                icon = { Icon(item.icon, contentDescription = item.title, modifier = Modifier.size(40.dp)) },
+                label = { Text(text = item.title,
+                    fontSize = 15.sp) },
+                selectedContentColor = Color.Black,
+                unselectedContentColor = Color.Black.copy(0.4f),
+                alwaysShowLabel = true,
+                selected = currentDestination?.route == item.route,
+                onClick = {
+                    navController.navigate(item.route) {
+                        popUpTo(navController.graph.findStartDestination().id)
+                        launchSingleTop = true
+                    }
                 }
-            })
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            Icon(
-                painter = painterResource(id = screen.icon),
-                contentDescription = "icon",
-                tint = contentColor
             )
-            AnimatedVisibility(visible = selected) {
-                Text(
-                    text = screen.title,
-                    color = contentColor
-                )
-            }
         }
     }
 }
@@ -146,5 +102,5 @@ fun ChangeInColor(color: String) : Color{
 @Composable
 @Preview
 fun BottomNavPreview() {
-    //BottomNav("Teams", {},)
+    BottomNav("Green", arrayListOf(1, 2, 3), {}, {}, {}, arrayListOf(1, 2, 3, 4, 5))
 }

@@ -28,6 +28,7 @@ fun CustomButton(
     modifier: Modifier = Modifier,
     textModifier: Modifier = Modifier,
     fontSize: TextUnit = TextUnit.Unspecified,
+    enabled: Boolean = true,
     onClick: () -> Unit
 )
 {
@@ -35,7 +36,8 @@ fun CustomButton(
         onClick = onClick,
         modifier = Modifier.then(modifier),
         shape = RoundedCornerShape(20),
-        border = BorderStroke(2.dp, Color.Black)
+        border = BorderStroke(2.dp, Color.Black),
+        enabled = enabled
     ) {
         Text(text, modifier = Modifier.padding(10.dp).then(textModifier), textAlign = TextAlign.Center, fontSize = fontSize)
     }
