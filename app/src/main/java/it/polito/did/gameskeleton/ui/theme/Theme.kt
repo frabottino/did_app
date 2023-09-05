@@ -8,33 +8,33 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 private val LightColorPalette = lightColors(
-    primary = Blue800,
-    primaryVariant = Blue800,
-    secondary = Teal200
+    primary = ThemeBlue,
+    primaryVariant = ThemeBlue,
+    secondary = ThemeBlue
 )
 
 private val LightColorPaletteRed = lightColors(
-    primary = Color.Red,
-    primaryVariant = Color.Red,
-    secondary = Color.Red
+    primary = ThemeRed,
+    primaryVariant = ThemeRed,
+    secondary = ThemeRed
 )
 
 private val LightColorPaletteBlue = lightColors(
-    primary = Color.Blue,
-    primaryVariant = Color.Blue,
-    secondary = Color.Blue
+    primary = ThemeBlue,
+    primaryVariant = ThemeBlue,
+    secondary = ThemeBlue
 )
 
 private val LightColorPaletteGreen = lightColors(
-    primary = Color.Green,
-    primaryVariant = Color.Green,
-    secondary = Color.Green
+    primary = ThemeGreen,
+    primaryVariant = ThemeGreen,
+    secondary = ThemeGreen
 )
 
 private val LightColorPaletteYellow = lightColors(
-    primary = Color.Yellow,
-    primaryVariant = Color.Yellow,
-    secondary = Color.Yellow
+    primary = ThemeYellow,
+    primaryVariant = ThemeYellow,
+    secondary = ThemeYellow
 )
 
 private val DarkColorPalette = darkColors(
@@ -44,27 +44,27 @@ private val DarkColorPalette = darkColors(
 )
 
 private val DarkColorPaletteBlue = darkColors(
-    primary = Color.Blue,
-    primaryVariant = Color.Blue,
-    secondary = Color.Blue
+    primary = ThemeBlue,
+    primaryVariant = ThemeBlue,
+    secondary = ThemeBlue
 )
 
 private val DarkColorPaletteGreen = darkColors(
-    primary = Color.Green,
-    primaryVariant = Color.Green,
-    secondary = Color.Green
+    primary = ThemeGreen,
+    primaryVariant = ThemeGreen,
+    secondary = ThemeGreen
 )
 
 private val DarkColorPaletteYellow = darkColors(
-    primary = Color.Yellow,
-    primaryVariant = Color.Yellow,
-    secondary = Color.Yellow
+    primary = ThemeYellow,
+    primaryVariant = ThemeYellow,
+    secondary = ThemeYellow
 )
 
 private val DarkColorPaletteRed = darkColors(
-    primary = Color.Red,
-    primaryVariant = Color.Red,
-    secondary = Color.Red
+    primary = ThemeRed,
+    primaryVariant = ThemeRed,
+    secondary = ThemeRed
 
     /* Other default colors to override
     background = Color.White,
