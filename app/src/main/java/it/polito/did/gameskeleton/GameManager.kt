@@ -227,7 +227,7 @@ class GameManager(private val scope:CoroutineScope) {
             when (name) {
                 "WaitingStart" -> ScreenName.WaitingStart
                 "Playing" -> ScreenName.Home(getMyTeam())
-                "Ranking" -> ScreenName.PlayerRank
+                "Ranking" -> ScreenName.PlayerRank(getMyTeam())
                 "Memory" -> ScreenName.Memory
                 "Flappy" -> ScreenName.Flappy
                 "Quiz" -> ScreenName.Quiz
@@ -239,7 +239,7 @@ class GameManager(private val scope:CoroutineScope) {
             when (name) {
                 "WaitingStart" -> ScreenName.WaitingStart
                 "Playing" -> ScreenName.Home(getMyTeam())
-                "Ranking" -> ScreenName.PlayerRank
+                "Ranking" -> ScreenName.PlayerRank(getMyTeam())
                 "Memory" -> ScreenName.Memory
                 "Flappy" -> ScreenName.Flappy
                 "Quiz" -> ScreenName.Quiz
@@ -251,7 +251,7 @@ class GameManager(private val scope:CoroutineScope) {
             when (name) {
                 "WaitingStart" -> ScreenName.WaitingStart
                 "Playing" -> ScreenName.Home(getMyTeam())
-                "Ranking" -> ScreenName.PlayerRank
+                "Ranking" -> ScreenName.PlayerRank(getMyTeam())
                 "Memory" -> ScreenName.Home(getMyTeam())
                 "Flappy" -> ScreenName.Home(getMyTeam())
                 "Quiz" -> ScreenName.Home(getMyTeam())

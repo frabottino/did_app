@@ -13,7 +13,7 @@ sealed class ScreenName {
     class Home(val team: String) : ScreenName()
     object Menu : ScreenName()
     object MiniRank : ScreenName()
-    object PlayerRank : ScreenName()
+    class PlayerRank(val team: String) : ScreenName()
     object Victory : ScreenName()
     object PlayerVictory : ScreenName()
     class WaitingCards(val team: String) : ScreenName()

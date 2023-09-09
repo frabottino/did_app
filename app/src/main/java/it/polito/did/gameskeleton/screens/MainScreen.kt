@@ -68,6 +68,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
             vm::onStartPhase
         )
         is ScreenName.PlayerRank -> PlayerRankingScreen(
+            screenName.team,
             vm.getPlayerRank()
         )
         is ScreenName.Victory -> VictoryScreen(
