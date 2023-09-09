@@ -26,7 +26,7 @@ import com.example.did_app.R
 import it.polito.did.gameskeleton.ui.theme.GameSkeletonTheme
 
 @Composable
-fun WaitScreen(modifier: Modifier = Modifier) {
+fun WaitScreen(modifier: Modifier = Modifier, text: String) {
     val infiniteTransition = rememberInfiniteTransition()
     val value by infiniteTransition.animateFloat(
         initialValue = 0f,
@@ -43,20 +43,26 @@ fun WaitScreen(modifier: Modifier = Modifier) {
     ) {
         Column() {
 
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Center,){
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Center) {
                 Image(
                     painter = painterResource(id = R.drawable.housewait),
                     contentDescription = "Wait screen",
-                    modifier = Modifier.size(320.dp).alpha(value)
+                    modifier = Modifier
+                        .size(320.dp)
+                        .alpha(value)
                 )
-                Text(text = "We are building your team...", textAlign = TextAlign.Center, color = MaterialTheme.colors.primary, fontSize = 40.sp,
+                Text(
+                    text = text,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colors.primary,
+                    fontSize = 40.sp,
                     modifier = Modifier
                         .align(Alignment.TopCenter)
-                        .offset(y = 200.dp))
+                        .offset(y = 100.dp)
+                )
 
             }
         }
-
 
     }
 }
@@ -64,8 +70,8 @@ fun WaitScreen(modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewWaitScreen() {
-    GameSkeletonTheme (){
-        WaitScreen()
+    GameSkeletonTheme() {
+        WaitScreen(text = "We are building your team...")
     }
 
 }

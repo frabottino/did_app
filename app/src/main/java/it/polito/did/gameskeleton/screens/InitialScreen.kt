@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -14,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.ExperimentalUnitApi
@@ -35,6 +37,7 @@ fun InitialScreen(
     var nameId = remember {
         mutableStateOf("")
     }
+    val focusManager = LocalFocusManager.current
 
     Scaffold(
         modifier = Modifier
@@ -90,7 +93,9 @@ fun InitialScreen(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 singleLine = true,
                 shape = RoundedCornerShape(20),
-                value = nameId.value, onValueChange = { nameId.value = it })
+                value = nameId.value, onValueChange = { nameId.value = it },
+                keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+            )
             /*TextField(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 singleLine = true,
@@ -104,7 +109,7 @@ fun InitialScreen(
             )
             CustomButton(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                onClick = { onJoinGame(matchId.value, nameId.value) },
+                onClick = { focusManager.clearFocus(); onJoinGame(matchId.value, nameId.value) },
                 text = "JOIN MATCH"
             )
 
