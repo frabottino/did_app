@@ -21,7 +21,6 @@ import it.polito.did.gameskeleton.GameViewModel
 import it.polito.did.gameskeleton.ui.theme.GameSkeletonTheme
 import kotlin.reflect.KFunction6
 
-
 @Composable
 fun CardsScreen(
     team: String,

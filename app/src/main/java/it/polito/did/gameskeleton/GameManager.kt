@@ -1253,19 +1253,19 @@ class GameManager(private val scope:CoroutineScope) {
                 "My" -> deck[5] += myDeck[4]
             }
         }
-        if(c <= 5 || c == 91 || c == 99) deck[0]++
-        if(c in 6..10 || c == 92) deck[1]++
-        if(c in 11..15 || c == 93) deck[2]++
-        if(c in 16..20) deck[3]++
+        if(c <= 5 || c == 91 || c == 99) deck[0]++ //trasporti 1
+        if(c in 6..10 || c == 92) deck[1]++ //trasporti 2
+        if(c in 11..15 || c == 93) deck[2]++ // trasporti 3
+        if(c in 16..20) deck[3]++ //centrale
         if(c in 21..25) {
             deck[3]+=3
-            deck[6]--
+            deck[6]-- //
         }
         if(c in 26..30) {
             deck[3]+=7
             deck[6]-=2
         }
-        if(c in 31..35) deck[4]++
+        if(c in 31..35) deck[4]++ //case
         if(c in 36..40) {
             deck[4]+=2
             deck[5]--
@@ -1274,11 +1274,11 @@ class GameManager(private val scope:CoroutineScope) {
             deck[4]+=5
             deck[5]-=2
         }
-        if(c in 46..51) deck[5]++
+        if(c in 46..51) deck[5]++ //monete
         if(c in 52..56) deck[5]+=2
         if(c in 57..60) deck[5]+=3
         if(c in 61..63) deck[5]+=4
-        if(c in 64..69) deck[6]++
+        if(c in 64..69) deck[6]++ //energia
         if(c in 70..74) deck[6]+=2
         if(c in 75..78) deck[6]+=3
         if(c in 79..81) deck[6]+=4
