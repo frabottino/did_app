@@ -49,7 +49,7 @@ fun ManagingScreen(team: String, cards: ArrayList<Int>) {
                 .verticalScroll(rememberScrollState()), Arrangement.Center
         ) {
             Text(
-                text = "Your cards",
+                text = if(cards.size == 0) "You have no cards yet" else "Your cards",
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colors.primary,
                 fontSize = 40.sp,
