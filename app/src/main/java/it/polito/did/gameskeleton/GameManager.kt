@@ -853,6 +853,9 @@ class GameManager(private val scope:CoroutineScope) {
                         "MiniPoints" to 0,
                         "VictoryPoints" to 0,
                         "Cards" to 0,
+                        "Transports" to 0,
+                        "Houses" to 0,
+                        "Plants" to 0
                     )
                 )
 
@@ -861,6 +864,9 @@ class GameManager(private val scope:CoroutineScope) {
                         "MiniPoints" to 0,
                         "VictoryPoints" to 0,
                         "Cards" to 0,
+                        "Transports" to 0,
+                        "Houses" to 0,
+                        "Plants" to 0
                     )
                 )
                 yellow.setValue(
@@ -868,6 +874,9 @@ class GameManager(private val scope:CoroutineScope) {
                         "MiniPoints" to 0,
                         "VictoryPoints" to 0,
                         "Cards" to 0,
+                        "Transports" to 0,
+                        "Houses" to 0,
+                        "Plants" to 0
                     )
                 )
                 green.setValue(
@@ -875,6 +884,9 @@ class GameManager(private val scope:CoroutineScope) {
                         "MiniPoints" to 0,
                         "VictoryPoints" to 0,
                         "Cards" to 0,
+                        "Transports" to 0,
+                        "Houses" to 0,
+                        "Plants" to 0
                     )
                 ).await()
             }catch (e: Exception) {
@@ -1293,11 +1305,32 @@ class GameManager(private val scope:CoroutineScope) {
         if(c > 100) deck[5]++
 
         when(team){
-            "Red" -> {rDeck = sumDecks(rDeck, deck) }
-            "Blue" -> {bDeck = sumDecks(bDeck, deck) }
-            "Yellow" -> {yDeck = sumDecks(yDeck, deck) }
-            "Green" -> {gDeck = sumDecks(gDeck, deck) }
-            "My" -> {myDeck = sumDecks(myDeck, deck) }
+            "Red" -> {
+                rDeck = sumDecks(rDeck, deck)
+                firebase.getReference(gameID.toString()).child("Red").child("Transports").setValue(rDeck[0]*rDeck[0]+rDeck[1]*rDeck[1]+rDeck[2]*rDeck[2])
+                firebase.getReference(gameID.toString()).child("Red").child("Plants").setValue(rDeck[3])
+                firebase.getReference(gameID.toString()).child("Red").child("Houses").setValue(rDeck[4])
+            }
+            "Blue" -> {bDeck = sumDecks(bDeck, deck)
+                firebase.getReference(gameID.toString()).child("Blue").child("Transports").setValue(rDeck[0]*rDeck[0]+rDeck[1]*rDeck[1]+rDeck[2]*rDeck[2])
+                firebase.getReference(gameID.toString()).child("Blue").child("Plants").setValue(rDeck[3])
+                firebase.getReference(gameID.toString()).child("Blue").child("Houses").setValue(rDeck[4])
+            }
+            "Yellow" -> {yDeck = sumDecks(yDeck, deck)
+                firebase.getReference(gameID.toString()).child("Yellow").child("Transports").setValue(rDeck[0]*rDeck[0]+rDeck[1]*rDeck[1]+rDeck[2]*rDeck[2])
+                firebase.getReference(gameID.toString()).child("Yellow").child("Plants").setValue(rDeck[3])
+                firebase.getReference(gameID.toString()).child("Yellow").child("Houses").setValue(rDeck[4])
+            }
+            "Green" -> {gDeck = sumDecks(gDeck, deck)
+                firebase.getReference(gameID.toString()).child("Green").child("Transports").setValue(rDeck[0]*rDeck[0]+rDeck[1]*rDeck[1]+rDeck[2]*rDeck[2])
+                firebase.getReference(gameID.toString()).child("Green").child("Plants").setValue(rDeck[3])
+                firebase.getReference(gameID.toString()).child("Green").child("Houses").setValue(rDeck[4])
+            }
+            "My" -> {myDeck = sumDecks(myDeck, deck)
+                firebase.getReference(gameID.toString()).child("Red").child("Transports").setValue(rDeck[0]*rDeck[0]+rDeck[1]*rDeck[1]+rDeck[2]*rDeck[2])
+                firebase.getReference(gameID.toString()).child("Red").child("Plants").setValue(rDeck[3])
+                firebase.getReference(gameID.toString()).child("Red").child("Houses").setValue(rDeck[4])
+            }
         }
     }
 
