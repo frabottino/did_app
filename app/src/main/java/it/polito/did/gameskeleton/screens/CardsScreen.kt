@@ -209,15 +209,7 @@ fun CardsScreen(
             }, confirmButton = {
                 Button(onClick = {
                     openDialog.value = 0
-                    if (first == -1 && second == -1) continueCards(
-                        6,
-                        6,
-                        vm,
-                        cards,
-                        sendCards
-                    )
-                    else if (first == -1) continueCards(6, second, vm, cards, sendCards)
-                    else if (second == -1) continueCards(6, second, vm, cards, sendCards)
+                    if (first == -1 || second == -1) continueCards(first, second, vm, cards, sendCards)
                 }) {
                     Text("Conferma")
                 }
@@ -259,12 +251,12 @@ fun continueCards(
     cards: ArrayList<Int>,
     sendCards: KFunction6<Int, Int, Int?, Int?, Int?, Int?, Unit>
 ) {
-    if (first != 6 && (cards[first - 1] in 82..85 || cards[first - 1] == 88)) vm.onGoCards2(
+    if (first != -1 && (cards[first - 1] in 82..85 || cards[first - 1] == 88)) vm.onGoCards2(
         first,
         second,
         cards[first - 1]
     )
-    else if (second != 6 && (cards[second - 1] in 82..85 || cards[second - 1] == 88)) vm.onGoCards2(
+    else if (second != -1 && (cards[second - 1] in 82..85 || cards[second - 1] == 88)) vm.onGoCards2(
         second,
         first,
         cards[second - 1]

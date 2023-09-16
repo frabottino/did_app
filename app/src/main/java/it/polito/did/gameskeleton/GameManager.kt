@@ -1089,10 +1089,12 @@ class GameManager(private val scope:CoroutineScope) {
         }
     }
 
-    fun sendMiniResult(pts : Int) {
+    fun sendMiniResult(pts : Int, wait: Boolean = true) {
         firebase.getReference(gameID.toString()).child(getMyTeam()).child("MiniPoints").child(playerName).setValue(0)
         firebase.getReference(gameID.toString()).child(getMyTeam()).child("MiniPoints").child(playerName).setValue(pts)
-        mutableScreenName.value = ScreenName.WaitingMini
+        if (wait) {
+            mutableScreenName.value = ScreenName.WaitingMini
+        }
     }
 
     fun endMinigame() {
@@ -1429,6 +1431,10 @@ class GameManager(private val scope:CoroutineScope) {
 
     fun getCurrentTeamName(): String {
         return teamNames[capTeam];
+    }
+
+    fun getTeamNames(): List<String> {
+        return teamNames;
     }
 
     fun getFinalRank() : List<Pair<String, Int>>{

@@ -253,24 +253,31 @@ object ConstantCards {
     private val energyCard18 = Card(
         4, 81, 4, R.drawable.energy_4
     )
+    //toglie una casa ad un team avversario
     private val instActCard1 = Card(
         5, 82, 1, R.drawable.card26
     )
+    //toglie una centrale ad un team avversario
     private val instActCard2 = Card(
         5, 83, 2, R.drawable.card24
     )
+    //toglie una energia ad un team avversario
     private val instActCard3 = Card(
         5, 84, 3, R.drawable.card25
     )
+    //toglie una moneta ad un team avversario
     private val instActCard4 = Card(
         5, 85, 4, R.drawable.card28
     )
+    //ottieni una moneta per ogni risorsa abitazione
     private val instActCard5 = Card(
         5, 86, 5, R.drawable.card27
     )
+    //raddoppia i punti trasporto
     private val permActCard1 = Card(
         6, 87, 1, R.drawable.card29
     )
+    //traforma la carta in un trasporto a scelta
     private val permActCard2 = Card(
         6, 88, 2, R.drawable.card30
     )

@@ -4,6 +4,8 @@ package it.polito.did.gameskeleton.flappyminigame
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
@@ -22,13 +24,13 @@ import com.example.did_app.R
 fun setBg(bg : Background){
     Box(
         Modifier
-            .offset(0.dp, 430.dp)//bg.position.dp, bg.y.dp)
+            .offset(0.dp, 250.dp)//bg.position.dp, bg.y.dp)
             .shadow(0.dp)
             .clip(RectangleShape)
     ) {
         Image(painter = painterResource(id = R.drawable.grass),
             contentDescription = "Pipe", //ground in basso
-            modifier = Modifier.size(500.dp, 335.dp)
+            modifier = Modifier.fillMaxSize()
         )
     }
 }

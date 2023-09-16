@@ -51,7 +51,8 @@ fun MainScreen(modifier: Modifier = Modifier) {
             vm.getFiveCards(),
             screenName.one,
             screenName.two,
-            screenName.i
+            screenName.i,
+            vm.getTeamNames()
         )
         is ScreenName.Cards3 -> Cards3Screen(
             screenName.team,
@@ -61,7 +62,8 @@ fun MainScreen(modifier: Modifier = Modifier) {
             screenName.two,
             screenName.i,
             screenName.check,
-            screenName.x
+            screenName.x,
+            vm.getTeamNames()
         )
         is ScreenName.MiniRank -> MiniRankingScreen(
             vm.getMiniRank(),

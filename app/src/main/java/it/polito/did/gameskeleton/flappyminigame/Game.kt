@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -32,14 +33,14 @@ class Game {
 
     var highScore = 0
 
-    fun start(){
+    fun start() {
         currentPipes.add(Pipe((5..15).random() * 10))
         currentPipes.first().position = 500f
         currentPipes.add(Pipe((5..15).random() * 10))
         currentPipes.last().position = 750f
     }
 
-    fun updatePipe(){
+    fun updatePipe() {
         if (currentPipes.last().position < 750f) {
             currentPipes.add(Pipe((5..15).random() * 10))
             addFlags = true
@@ -50,25 +51,25 @@ class Game {
     }
 
     fun update(flags: Boolean) {
-        if(flags)
+        if (flags)
             bird.value.update()
         else
             bird.value.fly()
     }
 
-    fun restart(){
+    fun restart() {
         currentPipes.clear()
         passCount = 0
         gameRunning = true
         start()
     }
 
-    fun setHigh(score : Int) : Int{
-        if(score >= highScore) highScore = score
+    fun setHigh(score: Int): Int {
+        if (score >= highScore) highScore = score
         return highScore
     }
 
-    fun getHigh() : Int{
+    fun getHigh(): Int {
         return highScore
     }
 }
@@ -81,48 +82,59 @@ fun FlappyBird() {
     var switchsFlagWindow by remember { mutableStateOf(1) }
     var upOrDown by remember { mutableStateOf(true) }
     var st by remember { mutableStateOf(System.currentTimeMillis()) }
+    var start by remember { mutableStateOf(System.currentTimeMillis()) }
+    var elapsed by remember { mutableStateOf(30) }
     var end: Long
 
-    val timer = object: CountDownTimer(3000, 1000) {
+    val timer = object : CountDownTimer(30000, 1000) {
+
         override fun onTick(millisUntilFinished: Long) {
             game.setHigh(game.passCount)
+            elapsed = ((System.currentTimeMillis() - start)/1000).toInt()
         }
+
         override fun onFinish() {
-            vm.sendMiniPts(game.highScore)
+            vm.sendMiniPts(game.highScore, false)
             vm.onEndMiniGame()
         }
     }
     timer.start()
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .clickable(
-            onClick = {
-                if (switchsFlagWindow == 2)
-                    upOrDown = !upOrDown
-                st = System.currentTimeMillis()
-            })) {
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .clickable(
+                onClick = {
+                    if (switchsFlagWindow == 2)
+                        upOrDown = !upOrDown
+                    st = System.currentTimeMillis()
+                })
+    ) {
         Image(
             painter = painterResource(id = R.drawable.street_bg),//"drawable/background.png"),
             contentDescription = "Icon", //sfondo di gioco
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.FillBounds
         )
         if (switchsFlagWindow == 1)
             Button(
-                onClick = { switchsFlagWindow = 2
-                    game.start()},
+                onClick = {
+                    switchsFlagWindow = 2;
+                    game.start()
+                },
                 modifier = Modifier
                     .align(Alignment.Center)
                     .size(height = 68.dp, width = 150.dp),
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)
             ) {
                 Image(
-                    painter = painterResource(android.R.drawable.ic_menu_manage),//"drawable/start.png"),
+                    painter = painterResource(android.R.drawable.ic_media_play),//"drawable/start.png"),
                     contentDescription = "Start",
                     modifier = Modifier.fillMaxSize()
                 )
             }
-        else if (switchsFlagWindow == 2){
+        else if (switchsFlagWindow == 2) {
             var text by remember { mutableStateOf("60 FPS") }
             var timeF by remember { mutableStateOf(System.nanoTime()) }
             game.currentPipes.forEach { PutPipe(it) }
@@ -131,14 +143,20 @@ fun FlappyBird() {
             //contentDescription = "ground", //era commentato
             //modifier = Modifier.offset(x = 0.dp, y = 400.dp)) //era commentato
             setBg(game.bg)
-            Text(text = text,
-                modifier = Modifier.background(color = Color.White))
-            Text(text = "${game.passCount}",
-                style = TextStyle( color = Color.White, fontSize = 24.sp),
+            Text(
+                text = text,
+                color = Color.Black,
+                modifier = Modifier.background(color = Color.White)
+            )
+            Text(
+                text = "Current score: ${game.passCount}",
+                style = TextStyle(color = Color.White, fontSize = 32.sp),
                 modifier = Modifier
-                    .align(Alignment.BottomCenter))
+                    .align(Alignment.BottomCenter)
+                    .offset(0.dp, (-20).dp)
+            )
             PutPipe(Pipe(20)) //era commentato
-            LaunchedEffect(Unit){
+            LaunchedEffect(Unit) {
                 while (game.bird.value.position <= 400f && game.gameRunning) {
                     withFrameNanos {
                         end = System.currentTimeMillis()
@@ -148,36 +166,56 @@ fun FlappyBird() {
                         game.update(upOrDown)
                         game.updatePipe()
                         end = System.nanoTime()
-                        if (end - timeF > 1000_000_000L) {
-                            text = "${((2000_000_000L - (end - timeF)) % 1000000L / 10000).coerceAtLeast(30)} FPS"
-                            timeF = System.nanoTime()
-                        }
+
+                        text =
+                            "Time remaining: ${30 - elapsed} sec"
+                        timeF = System.nanoTime()
+
                     }
                     game.bg.render()
                 }
                 switchsFlagWindow = 3
             }
-        }
-        else {
-            Button(
-                onClick = { switchsFlagWindow = 2
-                    game.restart()
-                    game.bird.value.position = 100f}
-                ){
+        } else {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                Button(
+                    onClick = {
+                        switchsFlagWindow = 2
+                        game.restart()
+                        game.bird.value.position = 100f
+                    }
+                ) {
+                    Text(
+                        text = "Score: ${game.passCount}\nHighscore: ${game.setHigh(game.passCount)}\n\nPress to restart",
+                        color = Color.Black,
+                        modifier = Modifier
+                            .padding(20.dp)
+                            .background(Color.White)
+                            .size(height = 70.dp, width = 180.dp),
+                        textAlign = TextAlign.Center
+                    )
                     Image(
-                        painter = painterResource(android.R.drawable.ic_dialog_dialer),//"drawable/gameover.png"),
+                        painter = painterResource(android.R.drawable.ic_media_play),//"drawable/gameover.png"),
                         contentDescription = "gameover"
                         //modifier = Modifier.align(Alignment.Center)
                     )
                 }
-            Text(
-                text = "Score: ${game.passCount}\nHighscore: ${game.setHigh(game.passCount)}",
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .padding(20.dp)
-                    .background(Color.White)
-                    .size(height = 50.dp, width = 120.dp),
-                textAlign = TextAlign.Center)
+            }
+//            Text(
+//                text = "Score: ${game.passCount}\nHighscore: ${game.setHigh(game.passCount)}",
+//                color = Color.Black,
+//                modifier = Modifier
+//                    .align(Alignment.Center)
+//                    .padding(20.dp)
+//                    .background(Color.White)
+//                    .size(height = 50.dp, width = 120.dp),
+//                textAlign = TextAlign.Center
+//            )
         }
     }
 
