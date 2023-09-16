@@ -28,8 +28,7 @@ fun GameMenuScreen(
     decks: ArrayList<ArrayList<Int>>,
     players: Collection<List<String>>,
     capId: Int,
-    onSetTempCap: KFunction1<String, Unit>,
-    modifier: Modifier = Modifier
+    currentTeamName: String,
 ) {
 
 //    GenericScreen(title = ""){
@@ -95,10 +94,10 @@ fun GameMenuScreen(
                     .weight(1f)
             ) {
                 // First Column
-                ColumnItem(modifier = Modifier.weight(1f), images[0], ThemeRed, "Red")
+                ColumnItem(modifier = Modifier.weight(1f), images[0], ThemeRed, "Red", currentTeamName == "Red")
 
                 // Second Column
-                ColumnItem(modifier = Modifier.weight(1f), images[1], ThemeBlue, "Blue")
+                ColumnItem(modifier = Modifier.weight(1f), images[1], ThemeBlue, "Blue", currentTeamName == "Blue")
             }
             Row(
                 modifier = Modifier
@@ -106,10 +105,10 @@ fun GameMenuScreen(
                     .weight(1f)
             ) {
                 // Third Column
-                ColumnItem(modifier = Modifier.weight(1f), images[2], ThemeGreen, "Green")
+                ColumnItem(modifier = Modifier.weight(1f), images[2], ThemeGreen, "Green", currentTeamName == "Green")
 
                 // Fourth Column
-                ColumnItem(modifier = Modifier.weight(1f), images[3], ThemeYellow, "Yellow")
+                ColumnItem(modifier = Modifier.weight(1f), images[3], ThemeYellow, "Yellow", currentTeamName == "Yellow")
             }
         }
 
@@ -121,13 +120,14 @@ fun ColumnItem(
     modifier: Modifier = Modifier,
     images: ArrayList<Int>,
     background: Color,
-    team: String
+    team: String,
+    active: Boolean,
 ) {
     Box(
         modifier = modifier
             .fillMaxHeight()
             .fillMaxWidth()
-            .border(5.dp, background)
+            .border(5.dp, if (active) background else Color.White)
     ) {
         Text(
             text = "Team $team",
@@ -196,6 +196,6 @@ fun PreviewGameMenuScreen() {
         decks = arrayListOf(arrayListOf(0)),
         players = listOf(listOf("")),
         capId = 0,
-        onSetTempCap = ::doNothing
+        currentTeamName = "Red"
     )
 }

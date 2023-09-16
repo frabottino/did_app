@@ -1427,6 +1427,10 @@ class GameManager(private val scope:CoroutineScope) {
         return capTeam
     }
 
+    fun getCurrentTeamName(): String {
+        return teamNames[capTeam];
+    }
+
     fun getFinalRank() : List<Pair<String, Int>>{
         val tempRank = arrayOf(Pair("Red", rVictory), Pair("Blue", bVictory), Pair("Green", gVictory), Pair("Yellow", yVictory))
         return tempRank.sortedWith(compareBy { it.second }).asReversed()

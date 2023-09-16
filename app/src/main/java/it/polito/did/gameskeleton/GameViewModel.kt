@@ -44,6 +44,7 @@ class GameViewModel: ViewModel() {
     fun getMyDeck() = gameManager.getMyDeck()
     fun getCapId() = gameManager.getCapID()
     fun getTeamId() = gameManager.getTeamID()
+    fun getCurrentTeamName() = gameManager.getCurrentTeamName()
     fun setTempCap(cap : String) = gameManager.setTemporaryCap(cap)
     fun getTeamList(team : Int) = gameManager.getTeamPlayers(team)
     fun getCardImage(id: Int) = gameManager.getCardImage(id)

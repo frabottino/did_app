@@ -82,7 +82,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
             vm.getDecks(),
             vm.getTeamList(vm.getTeamId()),
             vm.getCapId(),
-            vm::setTempCap
+            vm.getCurrentTeamName()
         )
         is ScreenName.Flappy -> FlappyBird()
         is ScreenName.Quiz -> QuizScreen()
