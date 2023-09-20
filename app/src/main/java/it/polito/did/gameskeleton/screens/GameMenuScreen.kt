@@ -31,52 +31,6 @@ fun GameMenuScreen(
     currentTeamName: String,
 ) {
 
-//    GenericScreen(title = ""){
-//        Box(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .background(Color.White),
-//            contentAlignment = Alignment.Center
-//        ) {
-//            Text(
-//                text = decks.toString(),
-//                fontSize = MaterialTheme.typography.h3.fontSize,
-//                fontWeight = FontWeight.Bold,
-//                color = Color.Black
-//            )
-//            Text(
-//                modifier = Modifier.align(Alignment.Center),
-//                text = decks.toString(),
-//                fontSize = MaterialTheme.typography.h3.fontSize,
-//                fontWeight = FontWeight.Bold,
-//                color = Color.Black
-//            )
-//            /*
-//
-//             */
-//
-//            //TODO non dimentichiamoci di rimetterlo
-//
-//            var images = getDecksImage(decks)
-//
-//            for (i in 0 until images.size) {
-//                Column(){
-//                for (j in 0 until 3) {
-//
-//                        Image(
-//                            painter = painterResource(
-//                                id = images[i][j]
-//                            ),
-//                            contentDescription = null,
-//                            contentScale = ContentScale.Fit,
-//                            modifier = Modifier.size(100.dp)
-//                        )
-//                    }
-//                }
-//            }
-//        }
-//    }
-
     var images = getDecksImage(decks)
     /*
     ExposedDropdownMenu(

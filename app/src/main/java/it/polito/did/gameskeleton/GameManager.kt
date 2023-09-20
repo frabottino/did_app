@@ -229,7 +229,7 @@ class GameManager(private val scope:CoroutineScope) {
                 "Quiz" -> ScreenName.Menu
                 "Cards" -> ScreenName.Menu
                 "Ending" -> ScreenName.Victory
-                "Ending" -> ScreenName.PlayerVictory
+                //"Ending" -> ScreenName.PlayerVictory
                 "Endgame" -> ScreenName.Initial
                 else -> ScreenName.Error("Unknown screen $name")
             }

@@ -33,7 +33,7 @@ fun PlayerRankingScreen(team: String, rank: Int) {
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Ranking",
+                text = "End of turn",
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colors.primary,
                 fontSize = 40.sp,
@@ -43,7 +43,7 @@ fun PlayerRankingScreen(team: String, rank: Int) {
             )
             Spacer(Modifier.height(80.dp))
             Text(
-                text = "Your team ranked:",
+                text = "This turn is finished: check your team ranking on the main screen!",
                 textAlign = TextAlign.Center,
                 color = Color.Black,
                 fontSize = 40.sp,
@@ -51,6 +51,7 @@ fun PlayerRankingScreen(team: String, rank: Int) {
                     .align(Alignment.CenterHorizontally)
                     .padding(horizontal = 10.dp)
             )
+            /*
             Text(
                 text = "${rank +1}",
                 textAlign = TextAlign.Center,
@@ -60,6 +61,7 @@ fun PlayerRankingScreen(team: String, rank: Int) {
                     .align(Alignment.CenterHorizontally)
                     .padding(horizontal = 10.dp)
             )
+            */
         }
     }
 }
