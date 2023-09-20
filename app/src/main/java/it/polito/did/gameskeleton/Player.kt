@@ -34,6 +34,7 @@ class Player {
     }
 
     fun isYourTeamTurn(id: Int, team: String, teams: MutableList<String>) : Boolean{
-        return team == teams[id]
+        return if(id < teams.size) team == teams[id]
+        else false
     }
 }

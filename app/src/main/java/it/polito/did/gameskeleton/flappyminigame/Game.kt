@@ -94,8 +94,12 @@ fun FlappyBird() {
         }
 
         override fun onFinish() {
-            vm.sendMiniPts(game.highScore, false)
-            vm.onEndMiniGame()
+            if(!(vm.isFlappyEnded()))
+            {
+                vm.sendMiniPts(game.highScore, false)
+                vm.onEndMiniGame()
+            }
+            vm.flappyEnded()
         }
     }
     timer.start()
@@ -218,5 +222,4 @@ fun FlappyBird() {
 //            )
         }
     }
-
 }

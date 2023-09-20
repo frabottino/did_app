@@ -11,11 +11,11 @@ class EmojiViewModel : ViewModel() {
     }
 
     var isFinished = false
-    var pts = 30
+    var pts = 25
 
 
 
-    var timer = object: CountDownTimer(10000, 1000) {
+    var timer = object: CountDownTimer(25000, 1000) {
         override fun onTick(millisUntilFinished: Long) {
             pts = (millisUntilFinished/1000).toInt()
         }
@@ -35,7 +35,7 @@ class EmojiViewModel : ViewModel() {
         emojis.value = mutableListOf(
             EmojiModel("\uD83C\uDF33"), //albero
             EmojiModel("\uD83C\uDF33"), //albero
-           /* EmojiModel("\uD83C\uDF3C"), //fiore
+            EmojiModel("\uD83C\uDF3C"), //fiore
             EmojiModel("\uD83C\uDF3C"), //fiore
             EmojiModel("\uD83C\uDF0D"), //pianeta
             EmojiModel("\uD83C\uDF0D"), //pianeta
@@ -46,8 +46,8 @@ class EmojiViewModel : ViewModel() {
             EmojiModel("⚡"), //fulmine
             EmojiModel("⚡"), //fulmine
 
-            */
         ).apply { shuffle() }
+        isFinished = false
         timer.start()
     }
 
@@ -59,11 +59,11 @@ class EmojiViewModel : ViewModel() {
 
         val selects: List<EmojiModel>? = emojis.value?.filter { it -> it.isSelect }
         val selectCount: Int = selects?.size ?: 0
-        var charFind: String = "";
+        var charFind = ""
         if (selectCount >= 2) {
-            val hasSameChar: Boolean = selects!!.get(0).char == selects.get(1).char
+            val hasSameChar: Boolean = selects!![0].char == selects[1].char
             if (hasSameChar) {
-                charFind = selects.get(0).char
+                charFind = selects[0].char
             }
         }
 

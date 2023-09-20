@@ -1,6 +1,5 @@
 package it.polito.did.gameskeleton.screens
 
-import android.os.CountDownTimer
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,15 +27,15 @@ import it.polito.did.gameskeleton.ScreenName
 val viewModel : EmojiViewModel = EmojiViewModel()
 
 @Composable
-fun MainContent(onStartMemory: () -> Unit,
-                vm : GameViewModel,
-                modifier: Modifier = Modifier) {
+fun MainContent(
+    vm: GameViewModel
+) {
     viewModel.loadEmojis()
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("MEMORY")// TODO Text(text = stringResource(id = R.string.app_name))
+                    Text("MEMORY")
                 },
                 actions = {
                     IconButton(onClick = { viewModel.loadEmojis()}) {

@@ -52,10 +52,7 @@ fun GameMenuScreen(
 //                color = Color.Black
 //            )
 //            /*
-//            ExposedDropdownMenu(
-//                items = players.random(),
-//                selected = players.random()[capId]
-//            )
+//
 //             */
 //
 //            //TODO non dimentichiamoci di rimetterlo
@@ -81,7 +78,13 @@ fun GameMenuScreen(
 //    }
 
     var images = getDecksImage(decks)
+    /*
+    ExposedDropdownMenu(
+              items = players.random(),
+              selected = players.random()[capId]
+          )
 
+     */
     Scaffold {
         Column(
             modifier = Modifier

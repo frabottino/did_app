@@ -56,7 +56,9 @@ fun Cards3Screen(team: String, sendCards: KFunction6<Int, Int, Int?, Int?, Int?,
         }
     }
 
-    val teams = teamNames.filter { it != team }
+    //val teams = teamNames.filter { it != team }
+    val teams = teamNames.toMutableList()
+    teams.remove(team)
     val w = LocalConfiguration.current.screenWidthDp.dp
 
 

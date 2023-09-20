@@ -1,6 +1,5 @@
 package it.polito.did.gameskeleton
 
-import androidx.compose.ui.res.painterResource
 import com.example.did_app.R
 
 object ConstantCards {
@@ -447,7 +446,7 @@ object ConstantCards {
 
     fun pickCard(a : Int?, s : String) {
         println("before ${cardsList[0].idC}, ${cardsList[1].idC}, ${cardsList[2].idC}, ${cardsList[3].idC}, ${cardsList[4].idC} $s")
-        if(a != null) cardsList.removeAt(a-1)
+        if(a != null && a != -1) cardsList.removeAt(a-1)
         println("after ${cardsList[0].idC}, ${cardsList[1].idC}, ${cardsList[2].idC}, ${cardsList[3].idC}, ${cardsList[4].idC} $s")
     }
 
@@ -456,6 +455,7 @@ object ConstantCards {
     }
 
     fun getCardByID(id : Int) : Card{
+        if(id > 100) return moneyCard1
         for (i in 0 until cardsList.size) {
             if (id == cardsList[i].idC)
                 return cardsList[i]

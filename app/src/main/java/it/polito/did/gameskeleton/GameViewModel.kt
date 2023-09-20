@@ -57,6 +57,8 @@ class GameViewModel: ViewModel() {
     fun onEndMiniGame() = gameManager.endMinigame()
     fun onEndgame() = gameManager.endGame()
     fun onCheckCards(pay: Int, what: String) = gameManager.checkCard(pay, what)
+    fun flappyEnded() = gameManager.flappyEnd()
+    fun isFlappyEnded() = gameManager.flappyEnded()
 
     val players = gameManager.players
     val screenName = gameManager.screenName

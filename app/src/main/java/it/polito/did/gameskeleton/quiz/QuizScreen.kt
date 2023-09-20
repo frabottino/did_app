@@ -3,11 +3,13 @@ package it.polito.did.gameskeleton.screens
 import android.os.CountDownTimer
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -34,6 +36,8 @@ fun QuizScreen(
 
     var pts = 15
     var questionCount = 0
+    var ansColor1 by remember { mutableStateOf(Color.White) }
+    var ansColor2 by remember { mutableStateOf(Color.White) }
 
     var timer = object : CountDownTimer(15000, 1000) {
         override fun onTick(millisUntilFinished: Long) {
@@ -44,15 +48,21 @@ fun QuizScreen(
         override fun onFinish() {
             if (Constants.quizCount == 0) pts = (pts / 2)
             else if (Constants.quizCount < 0) pts = 0
-            if (questionCount == 2) {
-                GameViewModel.getInstance().sendMiniPts(pts)
-                questionCount = -1
-            } else if (questionCount == 1) {
-                if (Constants.quizCount == 1) pts = 2
-                GameViewModel.getInstance().sendMiniPts(pts)
-                questionCount = -1
-                GameViewModel.getInstance().onEndMiniGame()
-            } else GameViewModel.getInstance().onEndMiniGame()
+            when (questionCount) {
+                2 -> {
+                    GameViewModel.getInstance().sendMiniPts(pts)
+                    questionCount = -1
+                }
+                1 -> {
+                    if (Constants.quizCount == 1) pts = 2
+                    GameViewModel.getInstance().sendMiniPts(pts)
+                    questionCount = -1
+                    GameViewModel.getInstance().onEndMiniGame()
+                }
+                else -> GameViewModel.getInstance().onEndMiniGame()
+            }
+            questionCount = 0
+            Constants.quizCount = 0
         }
     }
 
@@ -64,7 +74,6 @@ fun QuizScreen(
     } while (questID == questID2)
 
     timer.start()
-//TODO riposizionare decentemente i pezzi
 
     Scaffold(
         modifier = Modifier
@@ -129,7 +138,14 @@ fun QuizScreen(
                         .padding(24.dp),
                     fontSize = 20.sp,
                     onClick = {
-                        Constants.checkAnswer(1, Constants.setQuestionText(questID))
+                        if(Constants.checkAnswer(1, Constants.setQuestionText(questID))){
+                            if(questionCount == 0) ansColor1 = Color.Green
+                            if(questionCount == 1) ansColor2 = Color.Green
+                        }
+                        else{
+                            if(questionCount == 0) ansColor1 = Color.Red
+                            if(questionCount == 1) ansColor2 = Color.Red
+                        }
                         questID = questID2
                         if (questionCount++ == 2) timer.onFinish()
                     },
@@ -142,7 +158,14 @@ fun QuizScreen(
                         .padding(24.dp),
                     fontSize = 20.sp,
                     onClick = {
-                        Constants.checkAnswer(2, Constants.setQuestionText(questID))
+                        if(Constants.checkAnswer(2, Constants.setQuestionText(questID))){
+                            if(questionCount == 0) ansColor1 = Color.Green
+                            if(questionCount == 1) ansColor2 = Color.Green
+                        }
+                        else{
+                            if(questionCount == 0) ansColor1 = Color.Red
+                            if(questionCount == 1) ansColor2 = Color.Red
+                        }
                         questID = questID2
                         if (questionCount++ == 2) timer.onFinish()
                     },
@@ -156,7 +179,14 @@ fun QuizScreen(
                         .padding(24.dp),
                     fontSize = 20.sp,
                     onClick = {
-                        Constants.checkAnswer(3, Constants.setQuestionText(questID))
+                        if(Constants.checkAnswer(3, Constants.setQuestionText(questID))){
+                            if(questionCount == 0) ansColor1 = Color.Green
+                            if(questionCount == 1) ansColor2 = Color.Green
+                        }
+                        else{
+                            if(questionCount == 0) ansColor1 = Color.Red
+                            if(questionCount == 1) ansColor2 = Color.Red
+                        }
                         questID = questID2
                         if (questionCount++ == 2) timer.onFinish()
                     },
@@ -164,10 +194,37 @@ fun QuizScreen(
                 )
             }
             Spacer(Modifier.weight(1f))
-            Text(
-                text = "${Constants.quizCount}",
-                style = TextStyle(color = Color.Black, fontSize = 24.sp)
-            )
+            Row(
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.bonuscard3),
+                    contentDescription = "avatar",
+                    contentScale = ContentScale.Crop,            // crop the image if it's not a square
+                    modifier = Modifier
+                        .size(64.dp)
+                        .clip(CircleShape)                       // clip to the circle shape
+                        .border(40.dp, ansColor1, CircleShape) // add a border (optional)
+                )
+                Image(
+                    painter = painterResource(R.drawable.bonuscard3),
+                    contentDescription = "avatar",
+                    contentScale = ContentScale.Crop,            // crop the image if it's not a square
+                    modifier = Modifier
+                        .size(64.dp)
+                        .clip(CircleShape)                       // clip to the circle shape
+                        .border(40.dp, ansColor2, CircleShape)   // add a border (optional)
+                )
+                /*
+                Text(
+                    text = "${Constants.quizCount}",
+                    style = TextStyle(color = Color.Black, fontSize = 24.sp)
+                )
+
+                 */
+            }
+            Spacer(Modifier.weight(1f))
         }
     }
 }

@@ -27,9 +27,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
             modifier
         )
         is ScreenName.Memory -> MainContent(
-            vm::onStartMemory,
-            vm,
-            modifier
+            vm
         )
         is ScreenName.Home -> BottomNav(
             screenName.team,

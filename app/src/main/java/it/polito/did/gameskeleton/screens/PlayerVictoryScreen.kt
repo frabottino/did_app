@@ -23,7 +23,7 @@ fun PlayerVictoryScreen(rank: Int) {
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "Congratulations!\n Your team finished in $rank",
+                text = "Congratulations!\n Your team finished in ${rank+1}",
                 fontSize = MaterialTheme.typography.h3.fontSize,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
