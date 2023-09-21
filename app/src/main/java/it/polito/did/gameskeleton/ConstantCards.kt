@@ -295,6 +295,16 @@ object ConstantCards {
     private val bonusTrans3 = Card(
         6, 93, 4, R.drawable.bonuscard3
     )
+    private val bonus1 = Card(
+        6, 94, 4, R.drawable.bonustrans1
+    )
+    private val bonus2 = Card(
+        6, 95, 4, R.drawable.bonustrans2
+    )
+    private val bonus3 = Card(
+        6, 96, 4, R.drawable.bonustrans3
+    )
+
 
     fun shuffleInstantCards() {
         instantCardsList.add(instActCard1)
@@ -557,5 +567,8 @@ object ConstantCards {
         cardsList.add(bonusTrans1)
         cardsList.add(bonusTrans2)
         cardsList.add(bonusTrans3)
+        cardsList.add(bonus1)
+        cardsList.add(bonus2)
+        cardsList.add(bonus3)
     }
 }

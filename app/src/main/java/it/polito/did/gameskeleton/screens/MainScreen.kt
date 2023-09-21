@@ -76,6 +76,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
             vm::onEndgame
         )
         is ScreenName.PlayerVictory -> PlayerVictoryScreen(
+            screenName.team,
             vm.getFinalPlayerRank()
         )
         is ScreenName.Menu -> GameMenuScreen(

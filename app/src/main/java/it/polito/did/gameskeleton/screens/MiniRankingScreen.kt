@@ -52,6 +52,12 @@ fun MiniRankingScreen(
             }
         }
     }*/
+
+    val red = rank.find { pair -> pair.first == "Red" }
+    val blue = rank.find { pair -> pair.first == "Blue" }
+    val green = rank.find { pair -> pair.first == "Green" }
+    val yellow = rank.find { pair -> pair.first == "Yellow" }
+
     Scaffold {
         Column(
             modifier = Modifier
@@ -67,13 +73,15 @@ fun MiniRankingScreen(
                     modifier = Modifier.weight(1f),
                     ThemeRed,
                     "Red",
-                    rank.find { pair -> pair.first.equals("Red") }!!.second
+                    rank.find { pair -> pair.first == "Red" }!!.second,
+                    (10 - 3*rank.indexOf(red))
                 )
                 TeamPoints(
                     modifier = Modifier.weight(1f),
                     ThemeBlue,
                     "Blue",
-                    rank.find { pair -> pair.first.equals("Blue") }!!.second
+                    rank.find { pair -> pair.first == "Blue" }!!.second,
+                    (10 - 3*rank.indexOf(blue))
                 )
             }
             Row(
@@ -85,13 +93,15 @@ fun MiniRankingScreen(
                     modifier = Modifier.weight(1f),
                     ThemeGreen,
                     "Green",
-                    rank.find { pair -> pair.first.equals("Green") }!!.second
+                    rank.find { pair -> pair.first == "Green" }!!.second,
+                    (10 - 3*rank.indexOf(green))
                 )
                 TeamPoints(
                     modifier = Modifier.weight(1f),
                     ThemeYellow,
                     "Yellow",
-                    rank.find { pair -> pair.first.equals("Yellow") }!!.second
+                    rank.find { pair -> pair.first == "Yellow" }!!.second,
+                    (10 - 3*rank.indexOf(yellow))
                 )
             }
             Row(
@@ -116,6 +126,7 @@ fun TeamPoints(
     background: Color,
     team: String,
     points: Int,
+    vp: Int
 ) {
     Box(
         modifier = modifier
@@ -133,12 +144,19 @@ fun TeamPoints(
         )
         Spacer(modifier = Modifier.height(80.dp))
         Text(
-            text = "Points: $points",
+            text = "Points: $vp",
             textAlign = TextAlign.Center,
             color = background,
             fontSize = 80.sp,
             modifier = Modifier
                 .align(Alignment.Center)
+        )
+        Text(
+            text = "Phase Points: $points",
+            textAlign = TextAlign.Center,
+            color = background,
+            fontSize = 40.sp,
+            modifier = Modifier.align(Alignment.BottomCenter)
         )
 
     }

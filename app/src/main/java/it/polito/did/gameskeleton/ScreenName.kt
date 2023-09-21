@@ -15,7 +15,7 @@ sealed class ScreenName {
     object MiniRank : ScreenName()
     class PlayerRank(val team: String) : ScreenName()
     object Victory : ScreenName()
-    object PlayerVictory : ScreenName()
+    class PlayerVictory(val team: String) : ScreenName()
     class WaitingCards(val team: String) : ScreenName()
     class Cards(val team: String) : ScreenName()
     class Cards2(val team: String, val one: Int, val two : Int, val i : Int) : ScreenName()

@@ -142,7 +142,7 @@ fun Cards3Screen(team: String, sendCards: KFunction6<Int, Int, Int?, Int?, Int?,
                             if (opt == 1) {
                                 Image(
                                     painter = painterResource(
-                                        id = vm.getCardImage(91 + j).image
+                                        id = vm.getCardImage(94 + j).image
                                     ),
                                     contentDescription = null,
                                     contentScale = ContentScale.Fit,

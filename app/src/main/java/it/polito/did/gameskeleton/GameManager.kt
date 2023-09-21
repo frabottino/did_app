@@ -242,7 +242,7 @@ class GameManager(private val scope:CoroutineScope) {
                 "Flappy" -> ScreenName.Flappy
                 "Quiz" -> ScreenName.Quiz
                 "Cards" -> ScreenName.Cards(getMyTeam())
-                "Ending" -> ScreenName.PlayerVictory
+                "Ending" -> ScreenName.PlayerVictory(getMyTeam())
                 "Endgame" -> ScreenName.Initial
                 else -> ScreenName.Error("Unknown screen $name")
             }
@@ -255,7 +255,7 @@ class GameManager(private val scope:CoroutineScope) {
                 "Flappy" -> ScreenName.Flappy
                 "Quiz" -> ScreenName.Quiz
                 "Cards" -> ScreenName.WaitingCards(getMyTeam())
-                "Ending" -> ScreenName.PlayerVictory
+                "Ending" -> ScreenName.PlayerVictory(getMyTeam())
                 "Endgame" -> ScreenName.Initial
                 else -> ScreenName.Error("Unknown screen $name")
             }
@@ -268,7 +268,7 @@ class GameManager(private val scope:CoroutineScope) {
                 "Flappy" -> ScreenName.Home(getMyTeam())
                 "Quiz" -> ScreenName.Home(getMyTeam())
                 "Cards" -> ScreenName.Home(getMyTeam())
-                "Ending" -> ScreenName.PlayerVictory //TODO pensare a schermate alternative per il player
+                "Ending" -> ScreenName.PlayerVictory(getMyTeam())
                 "Endgame" -> ScreenName.Initial
                 else -> ScreenName.Error("Unknown screen $name")
             }
